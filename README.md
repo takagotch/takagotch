@@ -1,7 +1,7 @@
 ### takagotch
 ---
 
-![takagotch](https://github.com/mjpitz/mjpitz/raw/main/pis.jpeg)
+![takagotch](https://github.com/takaogtch/takagotch)
 ![Google Analytics](https://www.google-analytics.com/collect?v=1
 &tid=UA-174694405-1
 &cid=555
