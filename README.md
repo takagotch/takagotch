@@ -1,4 +1,4 @@
-![takagotch](https://github.com/takaogtch/takagotch/v4mJFCT.jpg)
+![takagotch](https://github.com/takagotch/takagotch/blob/master/v4mJFCT.jpg)
 ![Google Analytics](https://www.google-analytics.com/collect?v=1
 &tid=UA-174694405-1
 &cid=555
