@@ -1,6 +1,10 @@
 ### takagotch
 ---
 
+https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide?hl=ja
+
+
+
 ![takagotch](https://github.com/takaogtch/takagotch)
 ![Google Analytics](https://www.google-analytics.com/collect?v=1
 &tid=UA-174694405-1
