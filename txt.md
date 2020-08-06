@@ -1,9 +1,10 @@
 ### takagotch
 ---
-
+###### Measurement Protocol | google-analitics
 https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide?hl=ja
 
-
+###### ga-dev-tools | google-analytics
+https://ga-dev-tools.appspot.com/
 
 ![takagotch](https://github.com/takaogtch/takagotch)
 ![Google Analytics](https://www.google-analytics.com/collect?v=1
