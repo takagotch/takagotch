@@ -1,7 +1,15 @@
 ###### postgresql
 ---
 
+```sh
 bin/rails db:system:cahnge
+rails db:system:change --to=mysql
+rails db:system:change --to=sqlite3
+bin/rails db:system:change --to=postgresql
+
+// cat config/database.yml
+```
+
 
 ```sh
 vi Gemfile
