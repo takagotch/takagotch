@@ -195,6 +195,19 @@ module Webpacker
     end
   end
 end
+ 
+./node_modules/.bin/webpack --config/webpack/development.js
+vi
 
+
+
+
+
+
+
+
+
+vi app/views/layouts/application.html.erb
++ <%= javascript_pack_tag "vendor" %>
 ```
 
