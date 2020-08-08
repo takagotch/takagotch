@@ -1,7 +1,7 @@
 ###### postgresql
 ---
 
-
+bin/rails db:system:cahnge
 
 ```sh
 vi Gemfile
