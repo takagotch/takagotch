@@ -1,4 +1,4 @@
-######
+###### postgresql
 ---
 
 
@@ -34,7 +34,7 @@ psql -c 'select * from pg_user' postgres
 
 ```
 
-```
+```sh
 yum list | grep postgresql-server
 sudo yum install -y https://yum.postgresql.org/9.6/redhat/rhel-7-x86_64/pgdg-pgdg-redhat96-9.6-3.noarch.rpm
 sudo yum install -y postgresql96-server postgresql196-contrib
@@ -44,6 +44,19 @@ sudo /usr/pgsql-9.6/bin/postgresql96-setup initdb
 
 systemctl start postgresql-9.6.service
 systemctl enable postgresql-9.6.service
+
+psql -l
+
+sudo passwd postgres
+su - postgres
+psql
+create role {tky} login createdb password '{password}';
+\q
+exit
+psql -l
+
+systemctl stop postgresql-9.6.service
+
 ```
 
 
