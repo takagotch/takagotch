@@ -144,4 +144,28 @@ systemctl stop postgresql-12.3.service
 
 ```
 
+```yml
+// database.yml
+development:
+  adapter: sqlite3
+  database: db/apptky_development.sqlite3
+  pool: 5
+  timeout: 5000
+  
+test:
+  adapter: sqlite3
+  database: db/apptky_test.sqlite3
+  pool: 5
+  timeout: 5000
+  
+production:
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  database: apptky_production
+  username: <%= ENV['APPTKY_DATABASE_URLNAME'] %>
+  password: <%= ENV['APPTKY_DATABASE_PASSWORD'] %>
+  # url: <%= ENV['DATABASE_URL'] %>
+```
+
 
