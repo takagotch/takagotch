@@ -31,7 +31,46 @@ psql -c 'select * from pg_user' postgres
 
 
 
-
+sudo yum inxgzll -y postgresql-server
+psql --version
+sudo service postgresql initdb
+service postgresql start
+sudo passwd postgres
+su - 
+postgres
+createuser -P tky
+psql
+\du
+\q
+psql
+create database devdb;
+\l
+\q
+psql
+\pawwword
+\q
+sudo vi /var/lib/pgsql/data/pg_hba.conf
+sudo service postgresql stop
+sudo service postgresql start
+sudo yum install -y postgresql-devel
+vi Gemfile
+# gem 'pg'
+bundle install
+vi database.yml
++ development:
++   adapter: postgresql
++   encoding: utf8
++   pool: 5
++   username: tky
++   password: password
++   database: devdb
+cd ~/apptky
+rails g scaffold User name:string age:integer
+rake db:migrate
+rails s
+https://localhost:3000/users
+sudo systemctl enable postgresql
+sudo systemctl status postgresql
 ```
 
 ```sh
