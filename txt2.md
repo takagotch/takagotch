@@ -168,4 +168,33 @@ production:
   # url: <%= ENV['DATABASE_URL'] %>
 ```
 
+---
+###### webpacker
+
+```sh
+bin/webpack(-dev-server)
+bundle exec rake webpacker:compile
+bundle exec rake assets:precompile
+```
+
+
+```rb
+# webpacker/lib/webpacker/webpack_runner.rb
+require "shellwords"
+require "webpacker/runner"
+
+module Webpacker
+  class WebpackerRunner < Webpacker::Runner
+    def run
+       env = { "NODE_PATH" => @node_modules_path.shellescape }
+       cmd = [ "#{@node_modules_path}/.bin/webpack", "--config", @webpack_config ] + @argv
+       
+       Dir.chdir(@app_path) do
+         exec env, *cmd
+       end
+    end
+  end
+end
+
+```
 
