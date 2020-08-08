@@ -7,6 +7,7 @@ rails db:system:change --to=mysql
 rails db:system:change --to=sqlite3
 bin/rails db:system:change --to=postgresql
 
+// vi Gemfile
 // cat config/database.yml
 ```
 
