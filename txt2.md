@@ -197,10 +197,48 @@ module Webpacker
 end
  
 ./node_modules/.bin/webpack --config/webpack/development.js
-vi
 
+vi webpacker/lib/webpacker/manifest.rb
+class Webpacker::Manifest
+def lookup(name)
+  compile if compiling?
+  find name
+end
+private
+def compiling?
+  config.compile? && !dev_server.running?
+end
+end
 
+vi webpacker.yml
+default: &default
+  source_path: app/javascript
+deflopment:
+  <<: *default
+  compile: true
 
+vi webpacker/lib/webpacker/dev_server.rb
+class Webpacker::DevServer
+def running?
+  if config.dev_server.present?
+    Socket.tcp(host, port, connect_timeout: connect_timeout).close
+    true
+  else
+    false
+  end
+rescue
+  false
+end
+def host
+  fetch(:host)
+end
+def port
+  fetch(:port)
+end
+private
+def fetch(key)
+  ENV["WEBPACKER_DEV_SERVER_#{key.upcase}"] || config.dev_server.fetch(key, defaults[key])
+end
 
 vi webpacker.yml
 dev_server:
