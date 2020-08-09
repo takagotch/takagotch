@@ -202,9 +202,43 @@ vi
 
 
 
+vi webpacker.yml
+dev_server:
+  https: false
+  host: localhost
+  port: 3035
 
+vi docker-compose.yml
+version: '3'
+services:
+  backend:
+    command: 'bundle exec rails s -b 0.0.0.0'
+    environment:
+     - WEBPACKER_DEV_SERVER_HOST: frontend
+  frontend:
+    command: './node_modules/.bin/webpack-dev-server --config config/webpack/development --host 0.0.0.0 --port 3035'
 
+// split-chunks-plugin
+// webpacker v4
+vi config/webpack/environment.js
++ environment.splitChunks()
++ environment.splitChunks((config) => Object.assign({}, config, { optimization: { splitChunks: false }}))
+vi <%= javascript_packs_with_chunks_tag 'hoge' %>
 
+// webpack v3
+vi config/webpack/environment.js
++ const webpack = require('webpack')
++ 
++ environment.plugins.append(
++   'CommonsChunkVendor',
++    new webpack.optimize.CommonsChunkPlugin({
++      name: 'vendor',
++      minChunks: (module) => {
++        // this assumes your vendor imports exist in the node_modules directory
++        return module.context && module.context.indexOf('node_modules') !== -1
++      }
++   })
++ )
 
 
 vi app/views/layouts/application.html.erb
