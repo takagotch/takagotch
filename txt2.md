@@ -283,3 +283,18 @@ vi app/views/layouts/application.html.erb
 + <%= javascript_pack_tag "vendor" %>
 ```
 
+---
+
+
+```
+// ubuntu yarn
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/
+sudo apt-get update && sudo apt-get install yarn
+yarn -v
+yarn install --check-files
+yarn install 
+yarn upgrade
+```
+
+
