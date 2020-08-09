@@ -297,4 +297,56 @@ yarn install
 yarn upgrade
 ```
 
+```
+rails s webpacker:install
+vi Gemifle
+# gem 'webpacker', git: 'https://github.com/rails/webpacker.git'
+yarn add https://github.com/rails/webpacker.git
+yarn add core-js regenerator-runtime
+bundle
+bundle exec rails webpacker:install
+yarn upgrade
+yarn install
+vi /packs/application.js
+
+// vue
+bundle exec rails webpacker:install:vue
+rails new blog --webpack=vue
+vi config/initializers/content_security_policy.rb
++ Rails.application.config.content_security_policy do |policy|
++   if Rails.env.development?
++     policy.script_src :self, :https, :unsafe_eval
++   else
++     policy.script_src :self, :https
++   end
++ end
+vi assets/js/.vue
+- import Vue from 'vue'
+- import { VCard } from 'vuetify/lib'
+- Vue.component('VCard', VCard)
++ import Vue from 'vue'
++ Vue.component('VCard', import('vuetify/lib').then(({ VCard }) => VCard))
++ Vue.component('OtherComponent', () => import('./OtherComponent'))
+vi views/.html.erb
+<template>
+</template>
+<script>
+export default {
+  components: {
+    OtherComponent: () => import('./otherComponent')
+  }
+}
+</script>
+vi assets/js/.vue
+const files = require.context('./', true, /\.vue$/i)
+files.keys().map(key => {
+  const component = key.split('/').pop().split('.')[0]
+  
+  Vue.component(component, () => import(`${key}`))
+  
+  Vue.component(component, files(key).default)
+})
+```
+
+
 
