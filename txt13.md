@@ -98,12 +98,24 @@ curl http://localhost:3000/products/1
 
 vi app/products/show.html.erb
 + class FeedbacksMailbox < ApplicationMailer
-+
-+
-+
-+
-+ def
-+  
++   RECIPIENT_FORMAT = /feedback\-(.+)@gmail.com/i
++   before_processing :user
++   def process
++     if mail.parts.present?
++       Feedback.create user_id: @user.id, product_id: product_id, content: mail.parts[0].decoded
++     else
++       Feedback.create user_id: @user.id, product_id: product_id, content: mail.decoded
++     end
++   end
++   def user
++     @user ||= User.find_by(email: mail.from)
++   end
++   def user
++   end
++   def product_id
++     recipient = mail.recipients.find { |r| RECIPIENT_FORMAT.match?(r) }
++     recipient[RECIPIENT_FORMAT, 1]
++   end
 + end
 curl http://localhost:3000/rails/conductor/action_mailbox/inbound_emails/new
 vi config/environment/production.rb
