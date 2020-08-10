@@ -72,8 +72,16 @@ vi spec/workers/event_worker_spec.rb
 +     should be_processed_in(:event)
 +   end
 + end
+```
+
+```rb
+
+
+
+
 
 ```
+
 
 ###### ransack
 ```sh
