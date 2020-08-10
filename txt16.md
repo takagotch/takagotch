@@ -116,8 +116,17 @@ t.is_a?(Time)
 t.is_a?(ActiveSupport::TimeWithZone)
 ```
 
-
+###### jemalloc
 ```sh
+// ubuntu
+sudo apt install libjemalloc-dev
+su - 
+RUBY_CONFIGURE_OPTS=--with-jemalloc rbenv install 2.7.1
+rbenv global 2.7.1
+sudo systemctl restart apptky-*
+sudo systemctl restart apptky-sidekiq.service
+systemctl status apptky-sidekiq.serivce
+
 
 ```
 
