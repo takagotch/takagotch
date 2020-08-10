@@ -172,9 +172,37 @@ FeedbackMailer.send_email.deliver_now
 
 ```
 
-
+###### Active Storage models
 ```sh
+vi app/models/user.rb
++ class User < ApplicationRecord
++   has_one_attached :avatar, dependent: :destroy
++ end
 
+User.first.avatar.filename
+
+scope :"with_attached_#{name}", -> { includes("#{name}_attachment": :blob) }
+scope :with_attached_avatar, -> { includes(avatar_attachment: :blob) }
+
+vi app/controllers/users_controller.rb
++ class UsersController < ApplicationRelationship
++   def index
++     @users = User.paginate(page: params[:page])
++   end
++ end
+vi app/views/users/index.html.erb
++ <% @users.each do |users| %>
++   <%= image_tag user.avatar %>
++ <% end %>
+vi app/controllers/users_controller.rb
+class UsersController < ApplicationRelationship
+  def index
+-   @users = User.paginate(page: params[:page]).includes(avatar_attachment: :blob)
++   @users = User.paginate(page params[:page]).with_attached_avatar
+  end
+end
+
+users = User.include(avatar_attachments: :blob).to_a
 ```
 
 ###### rails db:system:change 
@@ -245,7 +273,7 @@ rails db:system:change
 rails db:system:change --to=postgresql
 ```
 
-###### sql
+###### sql annotate
 ```sh
 User.active.annotate("active users").or(User.all.annotate("all users"))
 User.optimizer_hints("MAX_EXECUTION_TIME(10000)").all.or(User.active)
