@@ -57,6 +57,23 @@ vi app/views/index.html.erb
 
 ###### kaminari
 ```sh
+vi app/controller/home_controller.rb
++ class HomeController < ApplicationController
++   def top
++     @posts = Post.all.order(created_at: :desc)
++     @posts = Post.page(params[:page]).per(20)
++   end
++ end
+vi app/views/_postindex.html.erb
++ <% @posts.each do |post| %>
++ <div class="panel panel-success">
++   <div class="panel-body">
++     <%= link_to(post) %>
++   </div>
++   <div class=""></div>
++ </div>
++ <% end %>
++ <%= paginate @posts %>
 
 ```
 
