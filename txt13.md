@@ -248,9 +248,28 @@ rails db:system:change --to=postgresql
 ###### sql
 ```sh
 User.active.annotate("active users").or(User.all.annotate("all users"))
-User.optimizer_hints("MAX_EXECUTION_TIME")
+User.optimizer_hints("MAX_EXECUTION_TIME(10000)").all.or(User.active)
 
+# ActiveRecord::Relation#annotate
+prefix = "Na"
+User.where("name LIKE ?", prefix).annotate("users with name starting with #{prefix}").to_sql
+User.select(:name).annotate("select names").where("name LIKE ?", prefix).annotate("users with name starting with #{prefix}").to_sql
+SELECT \"users\".* FROM \"users\" WHERE (name LIKE 'Na') "
 
+# associations
+has_many :comments, -> { annotate("user comments")}
+user.comments.to_sql
+SELECT \"comments\".* FROM \"comments\" WHERE \"comments\".\"user_id\" = 1 "
 
+# scoping
+scope :name_starts_with, ->(prefix) {
+  where("name like ?", prefix).annotate("user name starting with #{prefix}")
+}
+User.name_starts_with("Na")
+
+User.annotate("scoped").scoping do
+  User.all.to_sql
+end
+SELECT \"users\".* FROM \"users\"
 ```
 
