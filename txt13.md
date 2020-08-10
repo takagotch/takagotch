@@ -65,6 +65,29 @@ vi db/schema.rb
 bin/rails db:import_tsv
 
 
+vi database.yml
+# default: &default
+#   adapter: postgresql
+#   encoding: unicode
+#   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+#   
+# development:
+#   <<: *default
+#   database: sample_development
+#
+# test:
+#   <<: *default
+#   database: sample_test
+#
+# production:
+#   <<: *default
+#   database: sample_production
+#   username: sample
+#   password: <%= ENV['SAMPLE_DATABASE_PASSWORD'] %>
+vi Gemfile  
+# gem 'pg'
+rails db:system:change
+rails db:system:change --to=postgresql
 ```
 
 
