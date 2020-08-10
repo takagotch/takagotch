@@ -96,17 +96,24 @@ vi app/controller/application.controller.erb
 
 ###### AcctiveSupport::TimeWithZone
 ```rb
-Time.zone = ''
-Time.zone.local()
-Time.zone.parse()
-Time.zone.at()
+Time.zone = 'Eastern Time (US & Canada)'
+Time.zone.local(2020, 2, 10, 15, 30, 45)
+Time.zone.parse('2020-02-10 15:30:45')
+Time.zone.at(1171139445)
 Time.zone.now
-Time.utc().in_time_zone
+Time.utc(2020, 2, 10, 20, 30, 45).in_time_zone
 
 t = Time.zone.now
 t.hour
 t.dst?
-
+t.utc_offset
+t.zone
+t.to_s(:rfc822)
+t + 1.day
+t.beginning_of_year
+t > Time.utc(1999)
+t.is_a?(Time)
+t.is_a?(ActiveSupport::TimeWithZone)
 ```
 
 
