@@ -42,6 +42,9 @@ helm install rails ./rails
 
 ls charts
 helm dependency update
+helm test rails
+helm create ex1
+ls -R ex1/
 ```
 
 ```sh
