@@ -2,9 +2,54 @@
 ---
 
 ###### ActionText
-
 ```sh
+rails new feedback_collector
+rails action_mailbox:install
+rails g scaffold User name email
+rails g scaffold Product title
+rails g scaffold Feedback user:references product:references context:text
+rails db:migrate
+vi app/mailboxes/application_mailbox.rb
+# routing :all => :feedbacks
+rails g mailbox Feedbacks
 
+
+rails action_mailbox:install
+rails g scaffold User name:string email:string
+rails g scaffold Product title:string
+rails g scaffold Feedback user:references
+rails db:migrate
+vi app/models/product.rb
+vi app/models/user.rb
+vi app/mailboxes/application_mailbox.rb
+# routing /feedback\-(.+)@gmail.com/i => :feedbacks
+rails g mailbox Feedbacks
+vi app/mailboxes/feedbacks_mailbox.rb
+# def process
+# end
+vi app/mailboxes/feedbacks_mailbox.rb
+# def user
+#   @user ||= User.find_by{email: mail.from}
+# end
+vi app/mailboxes/application_mailbox.rb
+# RECIPIENT_FORMAT = /feedback\-(.+)@gmail.com/i
+Vi app/mailboxes/feedbacks_mailbox.rb
+<%#
+class FeedbacksMailbox < ApplicationMailbox
+  RECIPIENT_FORMAT = /feedback\-(.+)@gmail.com/i
+  before_processing :user
+  
+  def process
+  end
+  
+  def user
+  end
+  
+  def product_id
+    recipient = User.find_by(email: mail.from)
+  end
+end
+%>
 ```
 
 
