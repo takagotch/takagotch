@@ -1,7 +1,7 @@
 ######
 ---
 
-###### sidekiq, delayed_job, resque
+###### sidekiq, delayed_job, resque | ActiveJob
 ```sh
 vi Gemfile
 # gem 'sidekiq'
@@ -75,11 +75,74 @@ vi spec/workers/event_worker_spec.rb
 ```
 
 ```rb
+bin/rails g job generate_ticket
+vi app/jobs/application_job.rb
+# class ApplicationJob < ActiveJob::Base
+# end
+vi app/jobs/generate_ticket_job.rb
+# class GenerateTicketJob < ApplicationJob
+#   queue_as :default
+#   def perform(*args)
+#     p "Hello Active Job."
+#   end
+# end
+// call
+# GenerateTicketJob.perform_later
+# GenerateTicketJob.perform_later some_arg
+# GenerateTicketJob.set(wait: 5.second).perform_later
+
+bundle exec sidekiq
+
+sudo apt-get -y update && sudo apt-get install -y redis-server
+sudo systemctl start redis-server
+sudo systemctl status redis-server
+sudo systemctl enable redis-server
+cat app/Gemfile
+# gem 'sidekiq'
+bundle install
+bundel exec sidekiq
+
+vi config/application.rb
++ module ApptkyApp
++   class Application < Rails::Application
++     config.active_job.queue_adapter = :sidekiq
++   end
++ end
+rails c --sandbox
+require 'sidekiq/api'
+Sidekiq::Stats.new.processed
+Sidekiq::Stats.new.processed
+vi app/jobs/generate_ticket_job.rb
++ class GenerateTicketJob < ApplicationJob
++   queue_as :default
++   def perform
++     ticket = Ticket.create!(name: 'xxx')
++     p "Generating ticket #{ticket.name} ..."
++   end
++ end
+vi app/jobs/trashable_clean_job.rb
++ class TrashableCleanupJob < ApplicationJob
++   def perform(trashable, depth)
++     trashable.cleanup(depth)
++   end
++ end
+
+# GenerateTicketJob.new.perform
 
 
-
-
-
+Sidekiq::Stats.new.to_json
+p Sidekiq::Stats.new.to_json
+Sidekiq::RetrySet.new.each {|job| puts "#{job.jid} #{job.klass} #{job.args}"}
+Sidekiq::RetrySet.new.find_job('xxx')
+Sidekiq::RetrySet.new.each {|job| p job }
+Sidekiq::RetrySet.new.find_job(<JID>).delete
+Sidekiq::RetrySet.new.find_job('xxx').delete
+Sidekiq::RetrySet.new.clear
+Sidekiq::RetrySet.new.clear
+curl http://localhost:3000/sidekiq/
+vi config/routes.rb
+# require 'sidekiq/web'
+# mount Sidekiq::Web => '/sidekiq'
 ```
 
 
