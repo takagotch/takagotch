@@ -273,7 +273,7 @@ rails db:system:change
 rails db:system:change --to=postgresql
 ```
 
-###### sql annotate
+###### sql annotate utf8mb4
 ```sh
 User.active.annotate("active users").or(User.all.annotate("all users"))
 User.optimizer_hints("MAX_EXECUTION_TIME(10000)").all.or(User.active)
