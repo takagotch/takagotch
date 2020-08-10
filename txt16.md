@@ -2,6 +2,8 @@
 ---
 
 ###### sidekiq, delayed_job, resque | ActiveJob
+[sidekiq](https://github.com/mperham/sidekiq/wiki)
+
 ```sh
 vi Gemfile
 # gem 'sidekiq'
