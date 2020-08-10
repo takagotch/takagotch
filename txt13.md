@@ -12,8 +12,10 @@ rails db:migrate
 vi app/mailboxes/application_mailbox.rb
 # routing :all => :feedbacks
 rails g mailbox Feedbacks
+```
 
-
+######  ActionMailbox
+```
 rails action_mailbox:install
 rails g scaffold User name:string email:string
 rails g scaffold Product title:string
@@ -40,16 +42,57 @@ class FeedbacksMailbox < ApplicationMailbox
   before_processing :user
   
   def process
+    if mail.parts.present?
+      Feedback.create(
+        user_id: @user.id,
+        product_id: product_id,
+        content: mail.parts[0].body.decoded
+      )
+    else
+      Feedback.create(
+        user_id: @user.id,
+        product_id: product_id,
+        content: mail.decoded
+      )
+    end
   end
   
   def user
+    @user ||= User.find_by(email: mail.from)
   end
   
   def product_id
-    recipient = User.find_by(email: mail.from)
+    #- recipient = User.find_by(email: mail.from) { |r| RECIPIENT_FORMAT.match?(r) }
+    #+ recipient = "feedback-123@gmail.com"
+    recipient[RECIPIENT_FORMAT, l]
   end
 end
 %>
+vi app/mailboxes/feedbacks_mailbox.rb
+# routing FeedbackMailbox::RECIPIENT_FORMAT => :feedbacks
+rails s
+curl http://localhost:3000/users/new
+curl http://localhost:3000/products/new
+curl http://localhost:3000/rails/conductor/action_mailbox/inbound_emails/new
+curl http://localhost:3000/rails/conductor/action_mailbox/inbound_emails/1
+curl http://localhost:3000/products/1
+vi app/products/show.html.erb
++ <p id="notice"><%= notice %></p>
++ <p>
++   <strong>Title:</strong>
++   <%= @product.title %>
++ </p>
++ <%= link_to 'Edit', edit_product_path(@product) %>
++ <%= link_to 'Back', products_path %>
++ <h4>Feedback</h4>
++ <%= render @product.feedbacks %>
+vi app/feedbacks/_feedback.html.erb
++ <div>
++   <strong><%= feedback.user.name %></strong> said: <br />
++   <%= simple_format feedback.content %>
++ </div>
+curl http://localhost:3000/products/1
+
 ```
 
 
@@ -57,7 +100,7 @@ end
 
 ```
 
-######  ActionMailbox
+
 ```sh
 
 ```
