@@ -93,12 +93,61 @@ vi app/feedbacks/_feedback.html.erb
 + </div>
 curl http://localhost:3000/products/1
 
+
+
+
+vi app/products/show.html.erb
++ class FeedbacksMailbox < ApplicationMailer
++
++
++
++
++ def
++  
++ end
+curl http://localhost:3000/rails/conductor/action_mailbox/inbound_emails/new
+vi config/environment/production.rb
+# config.action_mailbox.ingress = :postmark
+
+# action_mailbox:
+#   ingress_password: PASSWORD
+
 # Demo Live
 # https://www.freenom.com/en/index.html?lang=en
 # https://sendgrid.com/
 # https://ngrok.com/
+curl https://actionmailbox:PASSWORD@gmail.com/rails/action_mailbox/postmark/inbound_emails
+vi config/environment/development.rb
+# config.action_mailer.smtp_settings = {
+#   :user_name => SENDGRID_USERNAME,
+#   :password => SENDGRID_PASSWORD,
+#   :domain => OUR DOMAIN,
+#   :address => 'smtp.sendgrid.net',
+#   :port => 587,
+#   :authentication => :plain,
+#   :enable_starttls_auto => true
+# }
+# config.action_mailer.delivery_method = :smtp
+# config.action_mailer.perform_deliveries = true
+# config.action_mailer.raise_delivery_errors = false
 
+./ngrok http 3000
 
+# config.action_mailbox.ingress = :sendgrid
+
+# action_mailbox:
+#   ingress_password: PASSWORD
+
+rails g mailer Feedback
+vi app/mailers/feedback_mailer.rb
+# class FeedbackMailer < ApplicationMailer
+#   default from: FROM_MAIL_ADDRESS
+#   def send_email
+#     mail(to: ANY_USERES_EMAIL, reply_to: REPLY_TO_MAIL_ADDRESS,  subject: 'Mailbox Test', body: 'Provide feedback for the product by replying to this mail')
+#   end
+# end
+
+FeedbackMailer.send_email.deliver_now
 ```
 
 
