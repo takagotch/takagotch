@@ -1,9 +1,22 @@
 ######
 ---
 
-
-
+###### sidekiq
 ```sh
+vi Gemfile
+# gem 'sidekiq'
+vi config/initializers/sidekiq.rb
++ Sidekiq.configure_server do |config|
++  config.redis = { url: 'redis://localhost:6379', namespace: 'sidekiq' }
++ end
+vi app/workers/event_worker.rb
++
++
++
++
++
++
+
 
 ```
 
