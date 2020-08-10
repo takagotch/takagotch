@@ -1,7 +1,7 @@
 ######
 ---
 
-###### sidekiq
+###### sidekiq, delayed_job, resque
 ```sh
 vi Gemfile
 # gem 'sidekiq'
@@ -10,13 +10,68 @@ vi config/initializers/sidekiq.rb
 +  config.redis = { url: 'redis://localhost:6379', namespace: 'sidekiq' }
 + end
 vi app/workers/event_worker.rb
-+
-+
-+
-+
-+
-+
-
++ class EventWorker
++   include Sidekiq::Worker
++   sidekiq_options queue: :event
++ 
++   def perform(id)
++     @event = Event.find(id)
++     @event.calculate_rank!
++   end
++ end
+vi app/controllers/events_controller.rb
++ class EventsController
++   def ranking
+-     EventWorker.perform_async @event.id
++     EventWorker.perform_in 1.hour, @event.id
++   end
++ end
+bundle exec sidekiq -q default event
+vi config/sidekiq.yml
++ :verbose: false
++ :pidfile: ./tmp/pids/sidekiq.pid
++ :logfile: ./log/sidekiq.log
++ :concurrency: 25
++ :queues:
++   - default
++   - event
+bundle exec sidekiq -C config/sidekiq.yml
+vi config/deploy.rb
++ require 'sidekiq/capistrano'
++ set :sidekiq_role, :web
+vi app/workers/event_worker.rb
++ sidekiq_options queue: :event, retry: 5
+vi app/workers/event_worker.rb
++ sidekiq_options queue: :event, retry: false
+vi Gemfile
+# 'sinatra', require: false
+vi config/routes.rb
++ require 'sidekiq/web'
++ MyApp::Application.routes.draw do
++   mount Sidekiq::Web, at: "/sidekiq"
++ end
+vi config/routes.rb
++ require 'sidekiq/web'
++ MyApp::Application.routes.draw do
++   authenticate :user, lambda { |u| u.admin? } do
++     mount Sidekiq::Web => '/sidekiq'
++   end
++ end
+vi Gemfile
+# group :test do
+#   gem 'rspec-sidekiq'
+# end
+vi spec/workers/event_worker_spec.rb
++ require 'spec_helper'
++ describe EventWorker do
++   let(:test_event) { create(:event) }
++   before do
++     subject.perform test_event.id
++   end
++   it "perform job queue in" do
++     should be_processed_in(:event)
++   end
++ end
 
 ```
 
