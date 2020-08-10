@@ -15,7 +15,7 @@ rails g mailbox Feedbacks
 ```
 
 ######  ActionMailbox
-```
+```yml
 rails action_mailbox:install
 rails g scaffold User name:string email:string
 rails g scaffold Product title:string
@@ -92,6 +92,12 @@ vi app/feedbacks/_feedback.html.erb
 +   <%= simple_format feedback.content %>
 + </div>
 curl http://localhost:3000/products/1
+
+# Demo Live
+# https://www.freenom.com/en/index.html?lang=en
+# https://sendgrid.com/
+# https://ngrok.com/
+
 
 ```
 
