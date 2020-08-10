@@ -95,7 +95,17 @@ vi app/controller/application.controller.erb
 ```
 
 ###### AcctiveSupport::TimeWithZone
-```sh
+```rb
+Time.zone = ''
+Time.zone.local()
+Time.zone.parse()
+Time.zone.at()
+Time.zone.now
+Time.utc().in_time_zone
+
+t = Time.zone.now
+t.hour
+t.dst?
 
 ```
 
