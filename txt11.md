@@ -9,8 +9,11 @@
 ```
 ```
 
-######
+###### [2-4]window, workspace
 ```
+Home + RightLeft
+
+Home + Alt + RightLeft
 ```
 
 ```
@@ -261,6 +264,22 @@ config.i18n.default_locale = :ja
     <%= yield%>
   </body>
 </html>
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
 ```
 
 
