@@ -115,11 +115,29 @@ end
 // output
 ```
 
-######
-```
-```
+###### puma_worker_killer, jemalloc
 
 ```
+vi Gemfile
+# gem 'puma_worker_killer'
+```
+
+
+```config/puma.rb
+befor_fork do
+  PumaWorkerKiller.config do |config|
+    config.ram = 1837
+    
+    config.frequency = 24 * 60 * 60
+    
+    config.percent_usage = 0.90
+    
+    config.rolling_restart_frequency = 3 * 60
+    
+    config.reaper_status_logs = false
+  end
+  PumaWorkerKiller.start
+end
 ```
 
 
