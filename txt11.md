@@ -48,9 +48,11 @@ Home + Alt + RightLeft
 ```
 
 ###### multi models
-| | |
-| | |
-| | |
+| | | |
+| :---: | :---: | :---: |
+| id | integer| |
+| title | string| |
+
 ```
 ```
 
