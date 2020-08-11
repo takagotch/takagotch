@@ -393,30 +393,85 @@ export default {
 
 
 ```app/javascript/store.js
+import Vue from 'vue'
+import Vuex from 'vuex'
 
+Vue.use(Vuex)
 
+export default new Vuex.Store({
+
+  state: {
+    count: 0
+  },
+  
+  mutations: {
+    setCount(state, payload) {
+      state.count = state.count + payload;
+    }
+  },
+  
+  getters: {
+    getCount(state) {
+      return state.count;
+    }
+  },
+  
+  actions: {
+    countAction(context, payload) {
+      context.commit('setCount', payload)
+    }
+  }
+})
 ```
 
 
 ```app/javascript/packs/hello_vue.js
+import Vue from 'vue'
+import App from '../app.vue'
+import store from '../store'
 
+document.addEventListener('DOMContentLoaded', () => {
+
+  const app = new Vue({
+    store: store,
+    render: h => h(App)
+  }).$mount()
+  
+  document.getElementById('root').appendChild(app.$el)
+})
 ```
 
 ```app/views/layouts/application.html.erb
-
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Myapp</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= javascript_pack_tag 'application' %>
+    <%= javascript_pack_tag 'hello_vue' %>
+  </head>
+  
+  <body>
+    <%= yield %>
+  </body>
+</html>
 ```
 
 ```app/views/pages/index.html.erb
-
+<div id="root"></div>
 ```
-
-```config/database.yml
-
-```
-
 
 ```config/routes.rb
+Rails.application.routes.draw do
+  get 'pages/index'
+  root to: 'pages#index'
+end
+```
 
+
+```config/database.yml
 ```
 
 ```sh
