@@ -1,12 +1,40 @@
-######
----
-
-
+###### ActiveRecord::Base.transaction
 
 ```
-```
+ActiveRecord::Base.transaction do
+  question.save!
+  answer.save!
+end
 
 ```
+###### Active Storage
+```nginx.conf
+server {
+  listen 443 ssl;
+  server_name tkgcci.com;
+  
+  location /rails-demo {
+    try_fies $uri @apptky;
+  }
+  location @rails_demo_app {
+    proxy_set_header X-Real_IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy-add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_pass http://localhost:3000;
+  }
+}
+
+```
+
+```config/application.rb
+config.active_storage.routes_prefix = '/apptky'
+
+```
+
+```url
+https://tkgcci.com/apptky/blobls/*
+
+https://tkgcci.com/apptky/
 ```
 
 ###### [2-4]window, workspace
