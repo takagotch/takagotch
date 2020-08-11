@@ -271,9 +271,42 @@ systemctl status apptky-sidekiq.serivce
 
 ```
 
-
+###### centos mariadb
 ```sh
+sudo systemctl stop mariadb
+sudo systemctl disable mariadb
+sudo yum remove mariadb
 
+sudo cd /var/lib/mysql
+sudo rm -rf mysql
+
+curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+sudo yum install MariaDB-server
+
+sudo vi /etc/my.cnf.d/server.cnf
+//
+[mariadb]
+character-set-server=utf8mbr4
+[client-mariadb]
+default-character-set=utf8mb4 // emoji utf8mb4
+
+sudo systemctl enable mariadb
+sudo systemctl start mariadb
+mysql
+
+sudo mysql_secure_installation
+Enter
+n
+y
+y
+y
+y
+y
+mysql -u root -p
+show databases;
+exit
+
+sudo yum -y install MariaDB-shared
 ```
 
 
