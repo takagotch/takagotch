@@ -141,9 +141,113 @@ end
 ```
 
 
-######
+###### CRUD rails,react,ajax
+
+```sh
+cd ~/ && mkdir apptky && cd apptky
+rails new . --webpack=react --skip-turbolinks --skip-action-mailer --skip-action-mailbox --skip-active-storage --skip-test -d mysql
+yarn add react-app-polyfill
+yarn add date-fns
+yarn add formdata-polyfill
+
+bin/rails g model react_crud_data name:string comment:text
+bin/rails g model react_crud_data_bk name:string comment:text
+
+bin/rails db:migrate
+bin/rails db:seed
+
+bin/rails g controller react_crud_data index
+
+```
+
+```Gemfile
+gem 'bootstrap'
+# app/assets/stylesheets/application.css
+# app/assets/stylesheets/application.scss
+# application.scss
+@import "bootstrap"
+```
+
+```config/application.rb
+class Application < Rails::Application
+  config.time_zone = 'Asia/Osaka'
+end
+```
+
+```config/database.yml
+```
+
+```db/seeds.rb
+
+```
+
+```config/routes.rb
+Rails.application.routes.draw do
+  root to: 'react_crud_data#index'
+  
+  get 'react_crud_data/index'
+  get 'react_crud_data/new', to: 'react_crud_data#new', as:'new_react_crud_data'
+  post 'react_crud_data', to: 'react_crud_data#create'
+  put 'react_crud_data/:id', to: 'react_crud_data#update'
+  delete 'react_crud_data/:id', to: 'react_crud_data#destroy'
+end
+```
+
+```app/views/layouts/application.html.erb
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+  </head>
+</html>
+```
+
+```app/views/react_crud_data/index.html.erb
+<div id="root"></div>
+```
+
+```app/controllers/react_crud_data_controller.rb
+
+```
+
+```app/models/react_crud_datum.rb
+```
+
+```a
+```
+
 ```
 ```
+
+
+
+
+```app/javascript/packs/hello_react.jsx
+```
+
+
+```
+```
+
+
+```
+```
+
+
+```
+```
+
+
+```
+```
+
+
+```
+```
+
+
+```
+```
+
 
 ```
 ```
