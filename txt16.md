@@ -373,17 +373,87 @@ export default {
 ```
 
 
-```sh
+```app/javascript/child.vue
+<template>
+  <p>{{ msg }} <span>{{ count }}</span></p>
+<template>
+<script>
+export default {
+  props: ['msg'],
+  computed: {
+    count(){
+      return this.$store.getters['getCount'];
+    }
+  }
+}
+</script>
+<style scoped>
+</style>
+```
+
+
+```app/javascript/store.js
+
 
 ```
 
 
-```sh
+```app/javascript/packs/hello_vue.js
+
+```
+
+```app/views/layouts/application.html.erb
+
+```
+
+```app/views/pages/index.html.erb
+
+```
+
+```config/database.yml
 
 ```
 
 
+```config/routes.rb
+
+```
+
 ```sh
+curl https://localhost:3000/
+```
+
+######
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
 
 ```
 
