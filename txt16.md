@@ -309,14 +309,67 @@ exit
 sudo yum -y install MariaDB-shared
 ```
 
-
+###### Vuex
 ```sh
+cd ~/
+mkdir tkyapp && cd tkyapp
+rails new . --webpack=vue --skip-turbolinks --skip-action-mailer --skip-action-mailbox --skip-active-storage --skip-test -d mysql
+yarn add vuex
+bin/rails g controller pages index
+vi app/javascript/app.vue
+vi app/javascript/child.vue
+vi app/javascript/sotre.js
+vi app/javascript/packs/hello_vue
 
+vi app/views/layouts/application.html.erb
+vi app/views/pages/index.html.erb
+vi config/database.yml
+vi config/routes.rb
+curl http://localhost:3000/
 ```
 
 
-```sh
-
+```app/javascript/app.vue
+<template>
+  <div>
+    <p>{{ msg }} <span>{{ count }}</span></p>
+    <MyChild msg="CHILD COMPONENT"/>
+    <input type="button" value=" + " v-on:click="increment" />
+    <input type="button" value=" - " v-on:click="decrement" />
+  </div>
+</template>
+<script>
+import MyChild from 'child.vue'
+export default {
+  data: function () {
+    return {
+      msg: "PARENT COMPONENT"
+    }
+  },
+  
+  components: {
+    MyChild
+  },
+  
+  computed: {
+    count() {
+      return this.$store.getters['getCount'];
+    }
+  },
+  
+  methods: {
+    increment() {
+      this.$store.dispatch('countAction', 1)
+    },
+    
+    decrement() {
+      this.$store.dispatch('countAction', -1);
+    }
+  }
+}
+</script>
+<style scoped>
+</style>
 ```
 
 
