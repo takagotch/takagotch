@@ -102,6 +102,10 @@ rails g devise:i18n:views
 rails g devise:views:locale ja
 
 rails g devise:controllers users
+
+bin/rails db:migrate
+
+curl http://localhost:3000/
 ```
 
 ```config/database.yml
@@ -266,22 +270,85 @@ config.i18n.default_locale = :ja
 </html>
 ```
 
+```app/models/user.rb
+class User < ApplicationRecord
+  devise :database_authenticable, :registerable,
+    :recoverable, :rememberable, :validable,
+    :confirmable, :lockable, :timeoutable, :trackable
+end
 ```
 
+```db/migrate/[timestamps]_devise_create_users.rb
+class DeviseCreateUsers < ActiveRecord::Migration[6.0]
+  def change
+    t.string :email, null:false, default: ""
+    t.string :encrypted_password, null: false, default: ""
+    
+    t.string :reset_password_token
+    t.datetime :reset_password_sent_at
+    
+    t.datetime :remember_created_at
+    
+    t.integer :sign_in_count, default: 0, null: false
+    t.datetime :current_sign_in_at
+    t.datetime :last_sign_in_at
+    t.string :current_sign_in_ip
+    t.string :last_sign_in_ip
+    
+    t.string :confirmation_token
+    t.datetime :confirmed_at
+    t.datetime :confirmation_sent_at
+    t.string :unconfirmed_email
+    
+    t.integer :failed_attempts, default: 0, null: false
+    t.string :unlock_token
+    t.datetime :locked_at
+    
+    t.timestamps null: false
+  end
+  
+  add_index :users, :email, unique: true
+  add_index :users, :reset_password_token, unique: true
+  add_index :users, :confirmation_token, unique: true
+  add_index :users, :unlock_token, unique: true
+end
 ```
 
+```config/initializers/devise.rb
+config.mailer_sender = 'info@gmail.com'
+
+config.unlock_strategy = :email
+config.maximum_attempts = 3
+config.timeout_in = 30.minutes
 ```
 
+```config/environments/development.rb
+config.action_mailer.default_url_options = {}
+config.action_mailer.raise_delivery_errors = true
+config.action_mailer.delivery_method = "smtp
+config.action_mailer.smtp_settings = {
+  :address => "smtp.ex.com",
+  :port => 465,
+  :user_name => "user",
+  :password => "password",
+  :authentication => :plain,
+  :ssl => true,
+  :tls => true,
+  :enable_starttls_auto => true
+}
 ```
 
-```
+```app/views/devise/mailer/confirmation_instructions.html.erb
+<p><%= t('.greeting', recipient: @email) %></p>
+<p><%= t('.instruction') %></p>
+<p><%= link_to t('.action'), confirmation_url(@resource, confirmation_token: @token) %></p>
+
+<p><%= t('.greeting', recipient: @email)%></p>
+<p><%= t('.instruction') %></p>
+<p><%= link_to t('.action'), confirmation_url(@resource, confirmation_token: @token) %></p>
+<p><%= confirmation_url(@resource, confirmation_token: @token) %></p>
 
 ```
-
-```
-
-```
-
 
 ######
 ```
