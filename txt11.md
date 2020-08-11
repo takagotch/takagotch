@@ -72,7 +72,7 @@
 ```
 
 
-###### device
+###### devise
 ```sh
 cd ~/ && mkdir apptky && cd apptky
 rails new . --skip-turbolinks --skip-test -d mysql
