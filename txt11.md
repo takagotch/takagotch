@@ -53,12 +53,67 @@ Home + Alt + RightLeft
 | id | integer| |
 | title | string| |
 
-```
-```
+||||
+| :---: | :---: | :---: |
+| id | integer||
+| question_id | integer| table ID|
+| name | string | name|
+| url | string | URL |
+| body| string| BODY CONTENT |
+||||
+||||
+
+```rb
+def new
+  @question = Question.new
+  @answer = Answer.new
+end
+
+def create
+  @question = Question.new(question_params)
+  @answer = Answer.new(answer_params[:answer])
+end
+
+private
+
+def question_params
+  params.require(:question).permit(:title)
+end
+
+def answer_params
+  params.require(:question).permit(answer:[:name, :url, :body])
+end
 
 ```
+
+```.slim
+= form_with model: @question,local:true do |f|
+  .form-group
+   = f.label :tile
+   = f.text_field :title, class 'form-control', id: 'question_title'
+   
+ = f.fields_for @answer do |i|
+   .form-group
+     = i.label :name
+     = i.text_field :name, class: 'form-control', id: 'question_answer_name'
+   .form-group
+     = i.label :url
+     = i.text_field :url, class: 'form-control', id: 'question_answer_url'
+   .form-group
+     = i.label :body
+     = i.text_area :body, rows: 5, class: 'form-control', id: 'question_answer_body'
+
+= f.submit 'CREATE', class: 'btn btn-primary'
 ```
 
+```json
+{
+// output
+}
+```
+```html
+// output
+```
 
 ######
 ```
