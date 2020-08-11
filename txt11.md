@@ -232,7 +232,35 @@ config.i18n.default_locale = :ja
 ```
 
 ```app/views/layouts/application.html.erb
-
+<!DOCTYPE html>
+<html>
+  <head>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= javascript_pack_tag 'application' %>
+  </head>
+  
+  <body>
+    <nav>
+      <% if user_signed_in? %>
+        <strong></strong>
+        <%= link_to 'EDIT', edit_user_registration_path %>
+        <%= link_to 'LOGOUT', destroy_user_session_path, method: :delete%>
+      <% else %>
+        <%= link_to 'NEW REGISTRATION', new_user_registration_path %>
+        <%= link_to 'LOGIN', new_user_session_path %>
+        <% end %>
+      <% end %>
+    </nav>
+    
+    <p class="notice"><%= notice %></p>
+    <p class="alert"><%= alert %></p>
+    
+    <%= yield%>
+  </body>
+</html>
 ```
 
 
