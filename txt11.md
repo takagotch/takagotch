@@ -718,11 +718,114 @@ name = nil
 ```
 
 
-######
-```
+###### ActionCable::Connection
+
+```rb
+module ApplicationCable
+  class Connection < ActionCable::Connection::Base
+    rescue_from UnhandledError, with: :error_handler
+    
+    def connect
+    end
+    
+    private
+    def error_handler(e)
+      #
+    end
+end
+
+class CommentaryChannel < ApplicationCable::Base
+  def subscribed
+  end
+  private
+  def error_handler
+  end
+end
 ```
 
+```rb
+module ApplicationCable
+  class Connection < ActionCable::Connection::Base
+    identified_by :current_user
+    
+    def connect
+      self.current_user = find_user
+    end
+    private
+    def find_user
+      User.find_by(id: cookies.signed[:current_user_id]) || reject_unauthorized_connection
+    end
+  end
+end
+
+class ApplicationCable::ConnectionTest < ActionCable::Connection::TestCase
+  def test_connection_success_when_cookie_is_set_correctly
+    user = users(:naren)
+    cookies.signed["current_user_id"] = user.id
+    #
+    # cookies["current_user_id"] = user.id
+    # cookies.encrypted["current_user_id"] = user.id
+    #
+    connect
+    #
+    assert_equal user.id, connection.current.id
+  end
+  def test_connection_rejected_without_cookie_set
+    assert_reject_connection { connect }
+  end
+end
+
+module ApplicationCalbe
+  class Connection < ActionCable::Connection::Base
+    def find_user
+      User.find_by(auth_token: request.headers["x-api-token"]) || reject_unauthorized_connection
+    end
+    
+  end
+end
+
+def test_connect_with_headers_and_query_string
+  connect params: { key1: "val1" }, headers:  { "X-API-TOKEN" => "secret-token" }, session: {session_var: "value"}
+  assert_equal "secret-token", connection.auth_token
+end
 ```
+
+```app/channels/commentary_channel.rb
+class CommentaryChannel < ApplicationCable::Channel
+  def subscribed
+    reject unless params[:match_id]
+    
+    if match_exists?(params[:match_id])
+      stram_from "match_#{params[:match_id]}"
+    end
+  end
+end
+```
+```test/channels/commenttary_channel_test.rb
+require "test_helper"
+
+class CommentaryChannelTest < ActionCalbe::C
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```
 
 
