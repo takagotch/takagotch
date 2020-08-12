@@ -433,7 +433,16 @@ document.addEventListener('DOMContentLoaded', () => {
 <div>
   <p />
   <div class="fixed-bottom bg-dark text-white" v-bind:style="">
-</div>
+  <span></span>
+  <span></span>
+  </div>
+  <h3></h3>
+  <p />
+  <form v-on:submit.prevent="handleInsert">
+  </form>
+  <p />
+  <h3></h3>
+  <p />
 </template>
 ```
 
