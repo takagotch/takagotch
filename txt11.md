@@ -253,15 +253,195 @@ end
 ```
 
 
+###### CRUD, vue, rails, ajax
+
+```sh
+cd ~/ && mkdir tkyapp && cd tkyapp && rails new . --webpack=vue --skip-turbolinks --skip-action-mailer --skip-action-mailbox --skip-active-storage --skip-test -d mysql
+yarn add babel-polyfill
+yarn add date-fns
+yarn add fetch-polyfill
+yarn add formdata-polyfill
+vi Gemfile
+# gem 'bootstrap'
+- app/assets/stylesheets/application.css
++ app/assets/stylesheets/application.scss
+# application.scss
+@ import "bootstrap"
+bundle install
+
+bin/rails g model vue_crud_data name:string comment:text
+bin/rails g model vue_crud_data_bk name:string comment:text
+
+bin/rails db:migrate
+bin/rails db:seed
+
+bin/rails g controller vue_crud_data index
+
+
+```
+
+```config/application.rb
+class Application < Rails::Application
+  config.time_zone = 'Asia/Osaka'
+end
+```
+
+```db/seeds.rb
+VueCrudDatum.create(id:1, name:'tky', comment: 'texttext',
+                    created_at: '2020-08-12 01:16:11', updated_at: '2020-08-13 01:16:11')
+                    
+```
+
+```config/routes.rb
+Rails.application.routes.draw do
+  root to: 'vue_crud_data#index'
+  
+  get 'vue_crud_data/index'
+  get 'vue_crud_data/new', to: 'vue_crud_data#new', as:'new_vue_data#new'
+  post 'vue_crud_data', to: 'vue_crud_data#create'
+  put 'vue_crud_data/:id' to: vue_crud_data#update
+  delete 'vue_crud_data/:id', to: 'vue_crud_data#destroy'
+end
+```
+
+```app/views/layouts/application.html.erb
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <title><%= ""CRUD PAGE%></title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="viewport" content="width=devise-width,initial-scale=">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= javascript_pack_tag 'application' %>
+    
+    <%# vue_crud.js READ %>
+    <%= javascript_pack_tag 'vue_crud' %>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-light bg-primary">
+      <div class="navbar-brand text-white"></div>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><%= link_to 'ALL INITIALIZE', class: 'nav-link', style: 'color:#fff'%></li>
+      </ul>
+    </nav>
+    <div class="container">
+      <%= yield %>
+    </div>
+    <nav class="container bg-primary p-2 text-center">
+      <div class="text-center text-white">
+        Vue CRUD PAGE
+      </div>
+      <div class="text-center text-white">
+        Created by TKVTV Co.ltd
+      </div>
+    </nav>
+  </body>
+</html>
+```
+
+```app/views/vue_crud_data/index.hmtl.erb
+<div id="root"></div>
+```
+
+```app/controllers/vue_crud_data_controller.rb
+class VueCrudDataController < ApplicationController
+  before_action :set_datum, only: [:update, :destroy]
+  
+  def index
+    @data = VueCrudDatum.all.order(updated_at: "DESC")
+    
+    respond_to do |format|
+      format.html
+      format.json { render json: @data }
+      # => output
+      # [
+      #  {"id":1,"name":"tky"}
+      # ]
+    end
+  end
+  def new
+    ActiveRecord::Base.transaction do
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE vue_crud_data;")
+      ActiveRecord::Base.connection.execute("INSERT INTO vue_crud_data SELECT * FROM vue_crud_data_bks;")
+    end
+    redirect_to root_path
+  end
+  def create
+    @datum = VueCrudDatum.new(datum_params)
+    respond_to do |format|
+      if @datum.save
+        format.json {render json: {registration: "SUCCESS, ajax data registration",
+                  id: @datum.id, name: @datum.name, comment: @datum.comment, updated_at}}
+      else
+        format.json { render json: {registration: "ERROR, ajax data registration",
+                  id: "error"}}
+      end
+    end
+  end
+  def update
+    respond_to do |format|
+      if @datum.update(datum_params)
+        format.json { render json: {registration: "SUCCESS"}}
+      else
+        format.json { render json: {registration: "ERROR"}}
+      end
+    end
+  end
+  def destroy
+    respond_to |format|
+      if @datum.destroy
+        format.json { render json: {registration: "SUCCESS"}}
+      else
+        format.json { render json: {registration: "ERROR"}}
+      end
+    end
+  end
+  private
+  def set_datum
+    @datum = VueCrudDatum.find(params[:id])
+  end
+  def datum_params
+    params.require(:datum).permit(:name, :comment)
+  end
+end
+```
+
+```app/models/vue_crud_datum.rb
+class VueCrudDatum < ApplicationRecord
+  validates :name, length: { maximum: 20 }, presence: true
+  validates :comment, length: { maximum: 140 }, presence: true
+end
+```
+
+```app/javascript/packs/vue_crud.js
+import "babel-polyfill";
+import Vue from 'vue'
+import VueCrudComponent from '../vue_curd_component.vue'
+document.addEventListener('DOMContentLoaded', () => {
+  const app = new Vue({
+    render: h => h(VueCrudCompnent.vue)
+  }).$mount()
+  document.getElementById('root').appendChild(app.$el)
+})
+```
+
+```app/javascript/vue_crud_component.vue
+<template>
+<div>
+  <p />
+  <div class="fixed-bottom bg-dark text-white" v-bind:style="">
+</div>
+</template>
+```
+
+
+
+
 ######
-```
-```
 
-```
-```
-
-
-######
 ```
 ```
 
