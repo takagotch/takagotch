@@ -439,10 +439,33 @@ document.addEventListener('DOMContentLoaded', () => {
   <h3>POST</h3>
   <p />
   <form v-on:submit.prevent="handleInsert">
+    <input type="text" class="form-control" placeholder="name" v-model="name" />
+    <textarea class="form-control" rows="5" placeholder="COMMENTS" v-model="comment" />
+    <input type="submit" value="REGISTRAION" class="btn btn-primary" />
   </form>
   <p />
-  <h3></h3>
+  <h3>LISTS</h3>
   <p />
+  <div class="card-columns">
+    <div v-for="(item, index) in items">
+    
+    <template v-if="!mode[index]">
+      <div v-bind:key="item.id" class="card">
+        <div class="card-header">
+          {{item.name}} <br />{{formatConversion(item.updated_at)}}
+        </div>
+        <div class="card-body">
+          {{item.comment}}
+          <br />
+          <br />
+          <form>
+            <div v-bind:style="{textAlign: 'right'}">
+              <input type="submit" value="EDIT" class="btn btn-primary" v-on:click.prevent="$root.$set(mode,index,!mode[index])"/>&nbsp;
+              <input type="submit" value="DELETE" class="btn btn-danger" v-on:click.prevent="handleDelete(index, item.id, $event)" />&nbsp;&nbsp;
+            </div>
+          </form>
+        </div>
+      </div>
 </template>
 <script>
 import {format} from 'date-fns'
