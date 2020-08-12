@@ -433,10 +433,10 @@ document.addEventListener('DOMContentLoaded', () => {
 <div>
   <p />
   <div class="fixed-bottom bg-dark text-white" v-bind:style="">
-  <span></span>
-  <span></span>
+  <span>&nbsp;</span>
+  <span>{{status}}</span>
   </div>
-  <h3></h3>
+  <h3>POST</h3>
   <p />
   <form v-on:submit.prevent="handleInsert">
   </form>
@@ -446,8 +446,23 @@ document.addEventListener('DOMContentLoaded', () => {
 </template>
 ```
 
+```
+config/master.key
+config/credentials.yml.enc
 
+config/database.yml
+bin/rails db:migrate
+bin/rails db:seed
 
+Gemfile
+Gemfile.lock
+bundle install
+
+node_modules
+yarn.lock
+yarn install
+
+```
 
 ######
 
