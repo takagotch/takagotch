@@ -447,8 +447,15 @@ document.addEventListener('DOMContentLoaded', () => {
 ```
 
 ```
+vi config/development.rb
+vi config/production.rb
+# config.require_master_key = true
+
 config/master.key
 config/credentials.yml.enc
+# EDITOR=vi bin/rails credentials:edit
+
+mkdir app/assets/images
 
 config/database.yml
 bin/rails db:migrate
@@ -462,6 +469,8 @@ node_modules
 yarn.lock
 yarn install
 
+http://localhost:3000/
+bin/rails s
 ```
 
 ######
