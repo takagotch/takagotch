@@ -704,8 +704,14 @@ end
 ```config/environments/development.rb
 Slim::Engine.options[:pretty] = true
 ```
-######
+###### Regexp#match
 ```
+name = nil
+/^Ruby[a-zA-Z]*/.match(name)
+/^Ruby[a-zA-Z]*/.match?(name)
+
+"tky".match(nil)
+"tky".match?(nil)
 ```
 
 ```
