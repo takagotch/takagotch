@@ -473,15 +473,81 @@ http://localhost:3000/
 bin/rails s
 ```
 
-######
+###### Bootstrap jQuery
 
-```
+```sh
+yarn add jquery popper.js bootstrap
+cat package.json
+rm -rf app/assets/stylesheets/application.css
+touch app/assets/stylesheets/application.scss
+// @import "bootstrap/scss/bootstrap";
+// @import "../../../node_modues/bootstrap/scss/bootstrap.scss";
+
+vi app/javascript/packs/application.js
+// require("@rails/ujs").start()
+// require("channels")
+// import 'bootstrap';
+
+vi config/webpack/environment.js
+// const { environment } = require('@rails/webpacker')
+/*
+  const webpack = require('webpack')
+  environment.plugins.prepned('Provide',
+    new webpack.ProvidePlugin({
+      $: 'jquery/src/jquery',
+      jQuery: 'jquery/src/jquery',
+      Popper: ['popper.js', 'default']
+    })
+  )
+*/
+/*
+environment.toWebpackConfig().merge({
+  resolve: {
+    alias: {
+      'jquery': 'jquery/src/jquery'
+    }
+  }
+});
+module.exports = environment
+*/
 ```
 
-```
+```test_toast.html
+<script>
+  $(window).on('load', function() {
+    $('body').addClass('bg-dark');
+  });
+</script>
+<br>
+<button type="button" class="btn btn-primary" onclick="$('toast').toast('show')">SHOW</button>
+<div class="toast" data-delay="3000" role="alert" aria-live="assertive">
+  <div class="toast-header">
+    <img src="https://tkgcci.com/images/manabu.gif" class="mr-2" alt="">
+    <strong class="mr-auto">TITLE</strong>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+  <div class="toast-body">
+    MESSAGE HERE!
+  </div>
+</div>
 ```
 
+```config/locales/ja.yml
+https://github.com/svenfuchs/rails-i18n/blob/master/rails/locale/ja.yml
 
+class Application < Rails::Application
+  config.time_zone = 'Asia/Tokyo'
+  config.i18n.default_locale = :ja
+  
+  config.hosts << "tkgcci.com"
+end
+```
+
+```config/environments/development.rb
+Slim::Engine.options[:pretty] = true
+```
 ######
 ```
 ```
