@@ -444,6 +444,139 @@ document.addEventListener('DOMContentLoaded', () => {
   <h3></h3>
   <p />
 </template>
+<script>
+import {format} from 'date-fns'
+import ja from 'date-fns/locale/ja'
+
+import 'formdata-polyfill'
+
+import "fetch-polyfill";
+
+export default {
+  data: function() {
+    return {
+      items: [],
+      mode: [],
+      name: ",
+      comment: ",
+      status: ''
+    }
+  },
+  
+  mounted: function() {
+    fetch("http://localhost:3000/vue_crud_data/index.json")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.items = result;
+          this.mode = Array(result.length).fill(false);
+        },
+        (error) => {
+          this.status = error.message;
+        }
+      )
+  },
+  
+  methods: {
+    run_ajax: function(method, url, data) {
+      fetch(url,
+        {
+          method: method,
+          body: JSON.stringify(data),
+          headers:{
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+          }
+        })
+      .then(res => res.json)
+      .then(
+        (result) => {
+          this.status = "SERVER MSG(" +
+                   this.formatConversion(new Date()) + ") :" + result.registration;
+          if(result.id) {
+            if(result.id == "error") {
+              // ERR
+              // else
+              // SUCCESS
+            } else {
+              this.items.unshift({id: result.id,
+                                name: result.name,
+                                comment: result.comment,
+                                updated_at: result.updated_at}
+                              );
+               this.mode.unshift(false);                
+            }
+          // UPDATE
+          // DELETE
+          } else {
+            //ERR
+            // else
+            //SUCCESS
+          }
+        },
+        (error) => {
+          this.status = error.message;
+        }
+      )
+      .catch((error) => {
+        this.status = error.message;
+        }
+      );
+    },
+    
+    formatConversion: function(updated_at) {
+      return format(new Date(Date.parse(updated_at)), '[timestamps]', {locale: ja})
+    },
+    
+    handleInsert: function(event) {
+      if (this.name && this.comment) {
+        this.run_ajax("POST", "http://localhost:3000/vue_crud_data/",
+        {datum: {name: this.name, comment: this.comment}}
+        );
+    this.name = ";
+    this.coment = ";
+      }
+    },
+    
+    handleUpdate: function (index, id, event) {
+      const from_data = new FormData(event.target);
+      
+      const txt name = form data.get('txt name');
+      const txt_comment = from_data.get('txt_comment');
+      
+      if (
+        (txt_name && txt_comment) &&
+        (!(this.items[index].name == txt_name &&
+           this.items[index].comment == txt_comment))
+      ) {
+      this.$root.$set(this.items[index], "name", txt_name);
+      this.$root.$set(this.items[index], "comment", txt_comment);
+      this.$root.$set(this.items[index], "updated_at", new Date());
+      
+      this.run_ajax("PUT", 
+                "http://localhost:3000/vue_crud_data/" + id,
+                {datum: {name: txt_name, comment: txt_comment}}
+              );
+      }
+      
+      this.$root.$set(this.mode, index, !this.mode[index])
+    },
+    
+    handleDelete: function(index, id, event) {
+      this.items.splice(index, 1);
+      this.mode.splice(index, 1);
+      
+      this.run_ajax("DELETE",
+                  "http://localhost:3000/vue_crud_data/" + id,
+                  {}
+                );
+    }
+  }.
+  
+  computed: {
+  }
+}
+</script>
 ```
 
 ```
