@@ -804,31 +804,54 @@ end
 ```test/channels/commenttary_channel_test.rb
 require "test_helper"
 
-class CommentaryChannelTest < ActionCalbe::C
+class CommentaryChannelTest < ActionCalbe::Channel::TestCase
+  test "subscribes and stream for a match" do
+    subscribe match_id: "1"
+    assert subscription.confirmed?
+    assert_has_stream "match_1"
+  end
+  
+  test "no steram for invalid match" do
+    subscribe match_id: "-1"
+    assert_no_streams
+  end
+  
+  test "no subscription if match identifier not present" do
+    subscribe 
+    assert subscription.rejected?
+  end
+end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+CommentaryChannel.broadcast_to match_identifier, comment: "Hello and welcome everyone!!"
 ```
 
+```rb
+class PublishCommentaryJob < ApplicationJob
+  def perform(match_id, comment)
+    return if match_id < 1
+    CommentaryChannel.broadcast_to "match_#{match_id}", comment: comment
+  end
+end
+```
 
+```.test_rb
+require "test_helper"
+
+class PublishCommentaryJobTest < ActionCable::Channel::TestCase
+  include ActiveJob::TestHelper
+  
+  test "publishes commentary" do
+  end
+  
+  test "asserts number of messages" do
+    perform_enqueued_jobs do
+      PublishCommentaryJob.perform_layter(1, "Hello and welcome everyone!!")
+      assert_broadcasts CommentaryChannel.broadcasting_for('match_1'), 1
+    end
+  end
+end
+
+```
 ###### devise
 ```sh
 cd ~/ && mkdir apptky && cd apptky
