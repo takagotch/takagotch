@@ -9,8 +9,7 @@ cd ~/ && mkdir apptky && cd apptky && rails new . --webpack=vue --skip-turbolink
 
 
 
-
-
+curl http://localhost:3000/
 bin/rails assets:precompile
 
 ```
@@ -23,7 +22,11 @@ headers: {
 ```
 
 
-```
+```config/routes.rb
+Rails.application.routes.draw do
+  get 'pages/index'
+  root to: 'pages#index'
+end
 ```
 
 ```
