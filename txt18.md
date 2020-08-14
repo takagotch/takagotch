@@ -1,4 +1,4 @@
-######
+###### ActiveStorage
 ---
 
 
@@ -195,8 +195,124 @@ end
 
 ```
 
+###### ActiveStorage
+```sh
+rails new . --skip-turbolinks --skip-action-mailer --skip-action-mailbox --skip-test -d mysql
+vi config/database.yml
+bin/rails active_storage:install
+bin/rails g scaffold Upload name:string description:text
+bin/rails db:migrate
+```
 
+```app/models/upload.rb
+class Upload < ApplicationRecord
+  has_one_attached :attachment
+end
+```
+
+```app/views/uploads/_form.html.erb
+<div>
+  <%= form.label "TEMPTED FILE" %>
+  <%= form.file_field :attachment %>
+</div>
+```
+
+```app/views/uploads/show.html.erb
+<p>
+  <strong>IMG:</strong>
+  <% if @upload.attachment.attached? && @Attachment_image %>
+    <%= image_tag @upload.attachment %>
+  <% end %>
+</p>
+<p>
+  <strong></strong>
+  <% if @cat.attachment.attached? %>
+    <%= link_to "TEMPTED FILE(" + @ext +")", rails_blob_path(@upload.attachment) %>
+  <% end %>
+</p>
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
 ```
 
 ```
 
+
+###### ActiveStorage
+```
+
+```
+
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
