@@ -54,3 +54,96 @@ end
 </html>
 ```
 
+```app/javascript/packs/hello_vue.js
+import Vue from 'vue'
+import App from ''
+import router from ''
+
+document.addEventListener('DOMContentLoaded', () => {
+  const app = new Vue({
+    router: router,
+    render: h => h(App)
+  }).$mount()
+  document.getElementById('root').appendChild(app.$el)
+})
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
+
+
