@@ -111,7 +111,19 @@ import "fetch-polyfill"
 ###### ipaddr rails6
 ```.rb
 require 'resolv'
-
+def isJapan?(ip)
+  if (ip == "::1" || ip == "127.0.0.1")
+    return true
+  end
+  host = Resolv.getname(ip)
+  if host.split('.')[-1].downcase == "jp"
+    true
+  else
+    false
+  end
+rescue Resolv::ResolvError
+  false
+end
 ```
 
 
