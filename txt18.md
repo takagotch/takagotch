@@ -127,12 +127,20 @@ end
 ```
 
 ###### ActiveStorage
-```.rb
-
+```app/models/upload.rb
+class Upload < ApplicationRecord
+  has_many_attached :attachments
+end
 
 ```
 
-```
+```.sh
+rails new . --skip-turbolinks --skip-action-mailer --skip-action-mailbox --skip-test -d mysql
+vi config/database.yml
+bin/rails active_storage:install
+bin/rails g scaffold Upload name:string description:text
+bin/rails db:migrate
+
 ```
 
 
