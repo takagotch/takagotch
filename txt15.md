@@ -163,8 +163,30 @@ export default new Router({
 
 ```
 
-```
+```app/javascript/app.vue
+<template>
+  <div>
+    <div>
+      <router-link to="/" tag="button">HOME</router-link>
+      <router-link to="/article/5">ARTICLE NO.5</router-link>
+      <router-link to="/article/33">ARTICLE NO.33</router-link>
+    </div>
+    <router-view/>
+  </div>
+</template>
+<script>
+</script>
+<style scoped>
+a {
+  color: blue;
+  text-decoration: none;
+}
 
+a.router-link-exact-active {
+  color: black;
+  font-weight: bold;
+}
+</style>
 ```
 
 ```
