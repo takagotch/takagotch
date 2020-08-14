@@ -34,9 +34,23 @@ end
 ```
 
 
-```
+```app/views/pages/index.html.erb
+<div id="root"></div>
 ```
 
-```
+```app/views/layouts/application.html.erb
+<!DOCTYPE html>
+<html>
+<head>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag 'application',media:'all' %>
+  <%= javascript_pack_tag'application' %>
+  <%= javascript_pack_tag 'hello_vue' %>
+</head>
+<body>
+  <%= yield %>
+<body>
+</html>
 ```
 
