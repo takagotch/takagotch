@@ -116,7 +116,24 @@ export default {
 ```
 
 ```app/javascript/components/home.vue
-
+<template>
+  <p>{{ message }}</p>
+</template>
+<script>
+export defaut {
+  name: 'home',
+  data: function () {
+    return {
+      message: "Hello Vue!"
+    }
+  }
+}
+</script>
+<style scoped>
+p {
+  font-size: 2em;
+}
+</style>
 ```
 
 ```
