@@ -268,17 +268,29 @@ end
 ###### ActiveStorage download URL
 ```nginx.conf
 server {
-
+  listen 443 ssl;
+  server_name tkgcci.com;
+  
+  location /apptky {
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_pass http://localhost:3000;
+  }
 }
-
 ```
 
+```config/application.rb
+config.active_storage.routes_prefix = '/apptky'
 ```
 
-```
+```url
+https://tkgcci.com/apptky/
+https://tkgcci.com/apptky/blobs/*
+https://tkgcci.com/rails/active_storage/blobs/*
 ```
 
-```
+######
 ```
 
 ```
