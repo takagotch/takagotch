@@ -141,6 +141,62 @@ bin/rails active_storage:install
 bin/rails g scaffold Upload name:string description:text
 bin/rails db:migrate
 
+curl http://localhost:3000/uploads
 ```
 
+```app/views/uploads/_form.html.erb
+<div class="field">
+  <%= form.label "tempfile possible to multi uploads"%>
+  <%= form.file_field :attachments, multiple: true %>
+</div>
+```
+
+```app/views/uploads/show.html.erb
+<p>
+  <strong>UPLOAD FILE:</strong>
+  <% if @cat.attachments.attached? %>
+    <% @cat.attachments.each do |obj| %>
+    <% url = rails_blob_path(obj) %>
+    <br>
+    <%= link_to URI.unescape(File.basename(url)),url %>
+    <% end %>
+  <% end %>
+</p>
+```
+
+
+```app/controllers/uploads/upload_controller.rb
+def create
+  @upload = Upload.new(upload_params)
+  @upload.attachments = params[:upload][:attachments]
+  if @upload.save
+    redirect_to @upload, notice: 'REGISTRAION!'
+  else
+    render :new
+  end
+end
+def update
+  @upload = Upload.where(id: params[:id])
+  @upload[0].name = params[:upload][:name]
+  @upload[0].description = params[:upload][:description]
+  @upload[0].attachments = params[:upload][:attachments]
+  @upload = @upload[0]
+  
+  if(!@upload.valid?)
+    render :edit
+    return
+  end
+  if @upload.save
+    redirect_to @upload, notice: 'UPDATED!'
+  else
+    render :edit
+  end
+end
+
+```
+
+
+```
+
+```
 
