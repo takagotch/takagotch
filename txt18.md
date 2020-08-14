@@ -109,7 +109,7 @@ import "fetch-polyfill"
 ```
 
 ###### ipaddr rails6
-```.rb
+```app/sessions/confirm_ip.rb
 require 'resolv'
 def isJapan?(ip)
   if (ip == "::1" || ip == "127.0.0.1")
@@ -126,8 +126,10 @@ rescue Resolv::ResolvError
 end
 ```
 
+###### ActiveStorage
+```.rb
 
-```
+
 ```
 
 ```
