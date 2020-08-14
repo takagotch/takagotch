@@ -93,11 +93,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 ```
 
+###### IE11 vue.js rails6
 ```
+yarn add babel-polyfill
+
 ```
 
 
-```
+```vue.js
+import "bable-polyfill";
+
 ```
 
 ```
