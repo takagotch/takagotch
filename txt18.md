@@ -108,8 +108,10 @@ import App from '../app.vue'
 import "fetch-polyfill"
 ```
 
-######
-```
+###### ipaddr rails6
+```.rb
+require 'resolv'
+
 ```
 
 
