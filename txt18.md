@@ -263,30 +263,13 @@ def update
     render :edit
   end
 end
-
-```
 ```
 
-```
-```
+###### ActiveStorage download URL
+```nginx.conf
+server {
 
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
-
-```
-
-
-###### ActiveStorage
-```
+}
 
 ```
 
