@@ -126,7 +126,7 @@ rescue Resolv::ResolvError
 end
 ```
 
-###### ActiveStorage
+###### ActiveStorage multi
 ```app/models/upload.rb
 class Upload < ApplicationRecord
   has_many_attached :attachments
@@ -195,13 +195,15 @@ end
 
 ```
 
-###### ActiveStorage
+###### ActiveStorage single
 ```sh
 rails new . --skip-turbolinks --skip-action-mailer --skip-action-mailbox --skip-test -d mysql
 vi config/database.yml
 bin/rails active_storage:install
 bin/rails g scaffold Upload name:string description:text
 bin/rails db:migrate
+
+curl http://localhost:3000/
 ```
 
 ```app/models/upload.rb
@@ -231,7 +233,36 @@ end
   <% end %>
 </p>
 ```
-```
+
+```app/controllers/uploads/uploads_controller.rb
+def create
+  @upload = Upload.new(cat_params)
+  @upload.attachment = params[:cat][:attachment]
+  
+  if @upload.save
+    redirect_to @cat, notice: 'REGISTRATION!'
+  else
+    render :new
+  end
+end
+
+def update
+  @upload = Upload.where(id: params[:id])
+  @upload[0].name = params[:upload][:name]
+  @upload[0].description = params[:upload][:description]
+  @upload[0].attachment = params[:upload][:attachment]
+  @upload = @upload[0]
+
+  if (!@upload.valid?)
+    render :edit
+    return
+  end
+  if @upload.save
+    redirect_to @upload, notice: 'UPDATED!'
+  else
+    render :edit
+  end
+end
 
 ```
 ```
