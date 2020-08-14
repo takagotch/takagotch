@@ -100,11 +100,15 @@ yarn add babel-polyfill
 ```
 
 
-```vue.js
+```.vue.js
 import "bable-polyfill";
+import Vue from 'vue'
+import App from '../app.vue'
 
+import "fetch-polyfill"
 ```
 
+######
 ```
 ```
 
