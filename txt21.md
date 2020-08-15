@@ -125,11 +125,33 @@ curl http://localhost:3000/
 ```
 
 ```/home/tky/apptky/config/unicorn.rb
+worker_processes Integer(ENV["WEB_CONCURRENCY"] || 4)
+timeout 15
+preload_app true
 
+listen '/home/tky/apptky/tmp/unicorn.sock'
+pid    '/home/tky/apptky/tmp/unicorn.pid'
 
-```
-
-```/home/tky/myapp/config/unicor
+before_fork do |server, worker|
+  Signal.trap 'TERM' do
+    puts 'Unicorn master intercepting TERM and sending myself QUIT instead'
+    Process.kill 'QUIT', Process.pid
+  end
+  
+  defined?(ActiveRecord::Base) and
+    ActiveRecord::Base.connection.disconnect!
+  end
+  
+  after_fork do |server, worker|
+    Signal.trap 'TERM' do
+      puts 'Unicorn worker intercepting TERM and doing nothing. Wait for master to send QUIT'
+    end
+    defined?(ActiveRecord::Base) and
+      ActiveRecord::Base.establish_connection
+  end
+  stderr_path File.expand_path('log/unicorn.log', ENV['RAILS_ROOT'])
+  stdout_path File.expand_path('log/unicorn.log', ENV['RAILS_ROOT'])
+end
 
 ```
 
@@ -250,8 +272,51 @@ server {
 
 ```/home/tky/apptky/lib/tasks/unicorn.rake
 # centos6
-
-
+namespace :unicorn do
+  desc "Start unicorn"
+  task(:start) {
+    config = Rails.root.join('config', 'unicorn.rb')
+    sh "unicorn -c #{config} -E development -D"
+  }
+  desc "Stop unicorn"
+  task(:stop) {
+    unicorn_signal :QUIT
+  }
+  
+  desc "Restart unicorn with USER2"
+  task(:restart) {
+    unicorn_signal :USER2
+  }
+  
+  desc "Increment number of worker processes"
+  task(:increment) {
+    unicorn_signal :TTIN
+  }
+  desc "Increment number of worker processes"
+  task(:increment) {
+    unicorn_signal :TTIN
+  }
+  desc "Decrement number of worker processes"
+  task(:decrement) {
+    unicorn_signal :TOU
+  }
+  desc "Unicorn pstree (depends on pstree command)"
+  task(:pstree) do
+    sh "pstree '#{unicorn_id}'"
+  end
+  
+  def unicorn_signal signal 
+    Process.kill signal, unicorn_pid
+  end
+  
+  def unicorn_pid
+    begin
+      File.read("/home/tky/apptky/tmp/unicorn.pid").to_i
+    rescue Errno::ENOENT
+      raise "Unicorn does not seem to be running"
+    end
+  end
+end
 ```
 
 
