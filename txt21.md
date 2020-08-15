@@ -80,8 +80,43 @@ sudo systemctl enable postgresql-11.service
 sudo yum install postgresql-devel
 
 # git/rbenv/ruby/rails
+sudo yum install git
+git -v
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+source ~/.bashrc
+git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
+rbenv -v
+sudo yum -y install autoconf bison
+sudo yum -y install bzip2 gcc openssl-devel readline-devel zlib-devel
+rbenv install 2.7.1
+rbenv global 2.7.1
+rbenv rehash
+ruby -v
+which ruby
+gem update --system
+gem -v
+gem list
+gem install bundler
+vi Gemfile
+# gem 'rails'  #gem install rails -v 6.0.3.2
+rails -v
+curl -sL https::/rpm.nodesource.com/setup_10.x | sudo bash -
+sudo yum install nodejs
+node -v
 
 # firewald
+sudo firewall-cmd --list-all
+sudo vi /etc/ssh/sshd_config
+# Port 22
++ Port 1022
+sudo systemctl restart sshd
+sudo cp /usr/lib/firewalld/services/ssh.xml /etc/firewalld/services/ssh-1022.xml
+sudo vi /etc/firewalld/services/ssh-1022.xml
+sudo firewall-cmd --permanent --add-service=ssh-1022
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
 
 curl http://localhost:3000/
 # => /usr/shared/nginx/html/index.html
