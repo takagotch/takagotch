@@ -44,9 +44,100 @@ bundle exec rake unicorn:stop
 curl http://ipaddr/
 curl http://ipaddr/tasks/index
 
+sudo vi/etc/nginx/conf.d/apptky.conf
+sudo vi /etc/nginx/nginx.conf
+
+cd /home/tky/apptky
+rails g task unicorn
+
+vi /home/tky/apptky/config/unicorn.rb
+
+cd ~/ && mkdir apptky && cd apptky && rails new . -d postgresql
+bin/rails db:create
+bin/rails g model Task name:string description:text
+bin/rails db:migrate
+bin/rails g controller tasks index show new edit
+vi /home/tky/apptky/Gemfile
+# gem 'unicorn'
+bundle install
+
+vi /home/tky/apptky/config/unicorn.rb
+
+
+sudo yum install -y nginx
+nginx -v
+sudo nginx
+sudo nginx -s stop
+
+sudo yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+sudo yum -y install postgresql11-server
+psql -V
+sudo PGSETUP_INITDB_OPTIONS="-E UTF8 --locale=C" /usr/pgsql-11/bin/postgresql-11-setup initdb
+sudo systemctl start postgresql-11.service
+sudo su postgres -c 'createuser -s TKY'
+psql postgres
+sudo systemctl enable postgresql-11.service
+sudo yum install postgresql-devel
+
+# git/rbenv/ruby/rails
+
+# firewald
+
+curl http://localhost:3000/
+# => /usr/shared/nginx/html/index.html
+
 
 ```
 
+```/home/tky/apptky/config/unicorn.rb
+
+
+```
+
+```/home/tky/myapp/config/unicor
+
+```
+
+```nginx.conf
+user USERNAME;
+
+worker_processes auto;
+
+events {
+  worker_connections 1024;
+}
+
+http {
+  server_tokens off;
+  
+  include /etc/nginx/mime.types;
+  default_type application/octet-stream;
+  
+  access_log /var/log/nginx/access.log;
+  error_log /var/log/nginx/error.log;
+  
+  sendfile on;
+  #tcp_nonpush on;
+  #keepalive_timeout 0;
+  keepalive_timeout 65;
+  #gzip on;
+  include /etc/nginx/conf.d/*.conf;
+}
+```
+
+```/home/tky/mysqpp/public/index.html
+<!DOCTYPE html>
+<html>
+<head>
+<title>TITLE!</title>
+</head>
+<body>
+  index.html shown.<br>
+  <br>
+  <a href="./tasks/index">Tasks#index</a>
+</body>
+</html>
+```
 
 ```/etc/init.d/unicorn
 # chkconfig
@@ -122,9 +213,10 @@ server {
 
 ```
 
-######
+```/home/tky/apptky/lib/tasks/unicorn.rake
+# centos6
 
-```
+
 ```
 
 
