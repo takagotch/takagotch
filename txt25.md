@@ -8,8 +8,21 @@ bundle install
 vi config/unicorn.rb
 rails g task unicorn
 vi lib/tasks/unicorn.rake
+
+rake unicorn:start
+ps -ef | grep unicorn | grep -v grep
+rake unicorn:stop
+rake unicorn:start
 ```
 
+```sh
+sudo mv /tmp/unicorn.sock /home/tky/apptky/tmp
+rake unicorn:start
+```
+
+```sh
+vi /etc/nginx/conf.d/default.conf
+```
 
 ```config/unicorn.rb
 worker_processes Integer(ENV["WEB_CONCURRENCY"] || 3)
@@ -89,30 +102,82 @@ namespace :unicorn do
 end
 ```
 
+```/etc/nginx/conf.d/default.conf
+upstream unicorn {
+  server unix:/home/vagrant/apptky/tmp/unicorn.sock;
+}
+
+server {
+  listen 80;
+  server_name 192.168.33.12;
+  
+  access_log /var/log/nginx/access.log;
+  error_log /var/log/nginx/error.log;
+  
+  root /home/vagrant/apptky/public;
+  
+  client_max_body_size 100m;
+  error_page 404 /404.html;
+  error_page 500 501 503 504 /500.html;
+  try_files $uri/index.html $uri @unicorn;
+  
+  location @unicorn {
+    proxy_set_header X-Real_IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_pass http://unicorn;
+  }
+}
+
 ```
+
+```sh
+/home/tky/apptky/public
+
+su -
+systemctl status nginx
+sudo systemctl start nginx
+sudo systemctl restart nginx
+sudo systemctl restart nginx
+curl 192.168.33.12
+
+vi config/secret.yml
+rake secret
 ```
+
+```sh
+rake unicorn:stop
+vi lib/tasks/unicorn.rake
+
+source ~/.bash_profile
+env | grep SECRET_KEY_BASE
+rake unicorn:start
+rake db:migrate RAILS_ENV=production
+rake assets:precompile RAILS_ENV=production
+rake unicorn:stop && rake unicorn:start
+```
+
+```lib/tasks/unicorn.rake
+- sh "unicorn -c #{config} -E development -D"
++ sh "unicorn -c #{config} -E production -D"
+```
+
+```config/secret.yml
+production:
+  secret_key_base: <%= ENV["SECRET_KEY_BASE"] %>
+```
+
+```.bash_profile .bashrc
+export SECRET_KEY_BASE=xxxxx
+```
+
 
 ```
 ```
 
-```
-```
 
-```
-```
-
-```
-```
 
 ######
-
-```
-```
-
-
-```
-```
-
 ```
 ```
 
