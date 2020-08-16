@@ -177,8 +177,34 @@ export SECRET_KEY_BASE=xxxxx
 
 
 
-######
-```
+###### SSL
+```sh
+rake unicorn:start
+bundle exec rake unicorn:start
+vi /etc/nginx/conf.d/rails(default).conf
 ```
 
+```/etc/nginx/conf.d/rails.conf
+upstream unicorn {
+  server unix:{apptky}/tmp/unicorn.sock;
+}
+server {
+  listen 80;
+  server_name {http://tkgcci.com};
+  return 301/ https://$host$request_uri;
+}
 
+server {
+
+}
+
+```
+
+```sh
+su -
+systemctl start nginx
+nginx -t
+setenforce 0
+systemctl start nginx
+
+```
