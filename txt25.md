@@ -195,9 +195,31 @@ server {
 }
 
 server {
+  listen 80;
+  server_name {http://tkgcci.com};
+  return 301 https://$host$request_uri;
+  ssl_certificate /etc/letsencrypt/live/{http://tkgcci.com}/fullchain.pen;
+  ssl_certificate_key /etc/letsencrypt/live/{http://tkgcci.com}/privkey.pem;
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+  
+  access_log /var/log/nginx/ssl-access.log main;
+  error_log /var/log/nginx/ssl-error.log;
+  root {apptky}/public;
+  include /etc/nginx/mime.types;
 
+  client-max_body_size 100m;
+  error_page 404 /404.html;
+  error_page 500 502 503 504 /500.html;
+  try_files $uri/index.html $uri @unicorn;
+  
+  location @unicorn {
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_pass http://unicorn;
+  }
 }
-
 ```
 
 ```sh
