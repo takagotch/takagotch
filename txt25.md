@@ -306,16 +306,56 @@ server {
 }
 ```
 
-```
+---
+###### gehirn rs2, ruby, rails, nginx, unicorn
+
+```sh
+vi gehirn-unicorn.conf
+vi unicorn-conf.rb
+vi config.ru
+
+unicorn_rails -c config/unicorn-conf.rb -D --path /apptky
+
+--path config.ru ENV['RAILS_RELATIVE_URL_ROOT']
 ```
 
-```
+```gehirn-unicorn.conf
+upstream backend-unicorn {
+  server unix:/home/user_name/public_html/rails_app/tmp/sockets/backend-un
+}
+
+server {
+  listen 61***; 
+  server_name localhost;
+  
+  location /apptky/ {
+    proxy_pass_header Server;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Server $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_read_timeout 75;
+    proxy_pass http://backend-unicorn;
+  }
+}
 ```
 
-```
+```unicorn-conf.rb
+$timeout = 75
+listen "/home/tky/public_html/apptky/tmp/sockets/backend-unicorn.sock"
+worker_processes 2
+pid "/home/tky/public_html/apptky/tmp/pids/unicorn.pid"
 ```
 
-```
+```config.ru
+require ::File.expand_path('../config/environment', __FILE__)
+if ENV['RAILS_RELATIVE_URL_ROOT']
+  map ENV['RAILS_RELATIVE_URL_ROOT'] do
+    run RailsApp::Application
+  end
+else
+  run RailsApp::Application
+end
 ```
 
 ```
