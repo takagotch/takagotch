@@ -247,7 +247,13 @@ vi ~/apptky/config/unicorn.rb
 sudo cp /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/apptky.conf
 vi /etc/nginx/conf.d/apptky.conf
 
-
+sudo /etc/init.d/nginx start
+su - rails
+cd ~/apptky/
+bundle exec unicorn_rails -c config/unicorn.rb -p 3000 -E development -D
+ps -ef | grep unicorn | grep -v grep
+curl http://localhost:3000/
+kill -QUIT <pid(tmp/unicorn.pid)>
 
 ```
 
@@ -286,7 +292,17 @@ server {
   access_log /var/log/nginx/apptky_access.log;
   error_log /var/log/nginx/apptky_error.log;
   
-  client_max
+  client_max_body_size 100m;
+  error_page 500 502 503 504 /500.html;
+  
+  try_files $uri/index.html $uri @unicorn;
+  
+  location @unicorn {
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_pass http://unicorn;
+  }
 }
 ```
 
