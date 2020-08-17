@@ -230,3 +230,79 @@ setenforce 0
 systemctl start nginx
 
 ```
+---
+
+###### rails6, nginx, unicorn
+```sh
+su -
+sudo vi /etc/yum.repos.d/nginx.repo
+sudo yum --enablerepo=nginx install nginx
+nginx -v
+su - rails
+cd ~/apptky/
+vi Gemfile
+bundle install --path=~/apptky/vendor/bundle
+vi ~/apptky/config/unicorn.rb
+
+sudo cp /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/apptky.conf
+vi /etc/nginx/conf.d/apptky.conf
+
+
+
+```
+
+```etc/yum.repos.d/nginx.repo
+[nginx]
+name=nginx repo
+baseurl = http://nginx.org/packages/centos/6/$basearch/
+gpgcheck=0
+enabled=0
+```
+
+``` ~/apptky/config/unicorn.rb
+rails_root = File.expand_path('../../', __FILE__)
+
+worker_processes 2
+working_directory rails_root
+
+listen "#{rails_root}/tmp/unicorn.sock"
+pid "#{rails_root}/tmp/unicorn.pid"
+
+stderr_path "#{rails_root}/log/unicorn_error.log"
+stdout_path "#{rails_root}/log/unicorn.log"
+```
+
+```/etc/nginx/conf.d/apptky.conf
+upstream unicorn {
+  server unix:/home/rails/apptky/tmp/unicorn.sock;
+}
+
+server {
+  listen 80;
+  server_name <SERVERNAME>;
+  
+  root /home/rails/apptky/public;
+  
+  access_log /var/log/nginx/apptky_access.log;
+  error_log /var/log/nginx/apptky_error.log;
+  
+  client_max
+}
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+
