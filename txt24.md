@@ -15,8 +15,10 @@ cat ~/.gitconfig
 [ghq]
   root = /Users/tky/.go/src
   root = /Users/tky/.ghq
-
 ```
+
+###### 
+---
 ```
 
 ```
