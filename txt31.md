@@ -62,6 +62,43 @@ production:
 
 ```docker-compose.yml
 
+services:
+  db:
+    image: postgres
+    ports:
+     - "5432:5432"
+    environment:
+     - "POSTGRES_USER=postgres"
+     - "POSTGRES_PASSWORD=password"
+    volumes:
+     - dbdata:/var/lib/postgresql/data
+  app:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    tty: true
+    stdin_open: true
+    ports:
+     - "3000:3000"
+    environment:
+     - "DB_HOST=db"
+     - "DB_PORT=5432"
+     - "DB_USER=postgres"
+     - "DB_PASSWORD=password"
+    env_file: .env
+    depends_on:
+     - db
+    volumes:
+     - .:/opt/app:cached
+     - bundle:/usr/local/bundle
+     # exclude volumes
+     - /opt/app/vendor
+     - /opt/app/tmp
+     - /opt/app/log
+     - /opt/app.git
+
+volumes:
+  dbata:
+  bundle:
 ```
 
 ```Dockerfile
