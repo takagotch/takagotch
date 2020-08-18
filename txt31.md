@@ -60,18 +60,63 @@ production:
 
 
 
-```
-```
+```docker-compose.yml
 
 ```
-```
+
+```Dockerfile
 
 ```
+
+```Gemfile
+
 ```
 
 
 
-```
+```Makefile
+FIG = docker-compose
+APP = $(FIG) exec app
+RAILS = $(APP) rails
+
+# container
+build:
+
+up:
+
+down:
+
+
+restart:
+  @$(FIG) stop
+  @$(FIG) start
+  
+clean:
+  @docker system prune
+
+# bundle install
+
+
+# rails 
+rc:
+  @$(RAILS) console
+  
+rr:
+  @$(RAILS) routes
+
+rt:
+  @$(RAILS) test
+
+# db
+dbc:
+  @$(RAILS) db:create
+  
+dbm: 
+  @$(RAILS) db:migrate
+  
+dbs:
+  @$(RAILS) db:seed
+
 ```
 
 ```
