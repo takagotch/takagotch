@@ -3,7 +3,7 @@
 
 ```sh
 rails g model Comment content:string image:references
-
+rails g controller comments create destroy
 ```
 
 ```models/comment.rb
