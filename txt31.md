@@ -65,7 +65,39 @@ production:
 ```
 
 ```Dockerfile
+FROM ruby: 2.7.1
 
+ENV APP_ROOT=/opt/app/
+ENV LANG C.UTF-8
+
+WORKDIR $APP_ROOT
+
+RUN apt-get update -qq && apt-get install -y build-essential --no-install-recommends \
+                && rm -rf /var/lib/apt/lists/*
+                
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+    && apt-get update \
+    && apt-get install -y yarn \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+    && apt-get install -y nodejs
+    
+COPY Gemfile Gemfile.lock $APP_ROOT
+
+RUN echo 'gem: --no-document' >> ~/.gemrc \
+    && cp ~/.gemrc /etc/gemrc \
+    && chomd uog+r /etc/gemrc \
+    && bundle config --global build.nokogiri --use-system-libraries \
+    && bundle config --global jobs 4 \
+    && bundle install \
+    && yarn install \
+    && rm -rf ~/.gem
+    
+COPY . $APP_ROOT    
+
+EXPOSE 3000
 ```
 
 ```Gemfile
