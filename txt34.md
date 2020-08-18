@@ -1,4 +1,4 @@
-######
+###### comments create destory rails6
 ---
 
 ```sh
@@ -60,6 +60,8 @@ end
 
 <% link_to "DELETE", image_comment_path(image_id: @image, id: comment.id), method: :delete %>
 ```
+---
+###### 
 
 
 
