@@ -69,7 +69,32 @@ production:
 ```
 
 ```Gemfile
+#
+gem 'pg'
+gem 'config'
+gem 'dotenv-rails'
+gem 'meta-tags'
 
+group :development, :test do
+  gem 'byebug', platforms: [:mri, :mingw, :x64-mingw]
+  gem 'pry-byebug'
+  gem 'pry-rails'
+  gem 'pry-coolline'
+  gem 'pry-stack_explorer'
+  gem 'hirb'
+  
+  gem 'letter_opener'
+  
+  gem 'simplecov'
+  
+  gem 'breakman'
+end
+
+group :development do
+  gem 'bullet'
+  
+  gem 'better_errors'
+end
 ```
 
 
@@ -81,11 +106,13 @@ RAILS = $(APP) rails
 
 # container
 build:
+  @$(FIG) build
 
 up:
+  @$(FIG) up
 
 down:
-
+  @$(FIG) down
 
 restart:
   @$(FIG) stop
@@ -95,8 +122,13 @@ clean:
   @docker system prune
 
 # bundle install
+bi:
+  @$(APP) build install
 
-
+br:
+  @$(APP) gem uninstall -aIx
+  @make bi
+  
 # rails 
 rc:
   @$(RAILS) console
