@@ -216,18 +216,170 @@ end
 
 ```
 
-```
+```callbacks .rb
+class Increment < ActiveInteraction::Base
+  set_callback :type_check, :before, -> { puts 'before type check' }
+  
+  integer :x
+  
+  set_callback :validate, :after, -> { puts 'after validate' }
+  
+  validates :x,
+    numericality: { greater_than_or_equal_to: 0 }
+    
+  set_callback :execute, :around, lambda { |_interaction, block|
+    puts '>>'
+    block.call
+    puts '<<'
+  }
+  
+  def execute
+    puts 'executing'
+    x + 1
+  end
+end
+
+Increment.run(x: 1)
+
 ```
 
 
-```
-```
+```create update  .rb
+
+class UpdateAccount < ActiveInteraction::Base
+  object :account
+  
+  string :first_name, :last_name,
+    default: nil
+    
+  validates :first_name,
+    presence: true,
+    if: :first_name?
+  validates :last_name,
+    presence: true,
+    if: :last_name?
+    
+  def execute
+    account.first_name = first_name if first_name?
+    account.last_name = last_name if last_name?
+    
+    unless account.save
+      errors.merge!(account.errors)
+    end
+    
+    account
+  end
+end
+
+
+def update
+  inputs = { account: find_account! }.reverse_merge()
+  outcome = UpdateAccount.run(inputs)
+  
+  if outcome.valid?
+    redirect_to(outcome.result)
+  else
+    @account = outcome
+    render(:edit)
+  end
+end
 
 ```
-```
+
+```edit destroy.rb
+def edit
+  account = find_account!
+  @account = UpdateAccount.new(
+    account: account,
+    first_name: account.first_name,
+    last_name: account.last_name)
+end
+
+def destroy
+  DestroyAccount.run!(account: find_account!)
+  redirect_to(accounts_url)
+end
+
+def create
+  outcome = CreateAccount.run(params.fetch(:account, {}))
+  
+  if outcome.valid?
+    redirect_to(outcome.result)
+  else
+    @account = outcome
+    render(:new)
+  end
+end
 
 ```
+
+```new show index .rb
+def index
+  @accounts = ListAccounts.run!
+end
+
+class ListAccounts < ActiveInteraction::Base
+  def execute
+    Account.not_deleted.order(last_name: :asc, first_name: :asc)
+  end
+end
+
+def show
+  @account = find_account!
+end
+
+def find_account!
+  outcome = FindAccount.run(params)
+  
+  if outcome.valid?
+    outcome.result
+  else
+    fail ActiveRecord::RecordNotFound, outcome.errors.full_messages.to_sentence
+  end
+end
+
+class FindAccount < ActiveInteraction::Base
+  integer :id
+  
+  def execute
+    account = Account.not_deleted.find_by_id(id)
+    
+    if account
+      account
+    else
+      errors.add(:id, 'does not exist')
+    end
+  end
+end
+
+def new
+  @account = CreateAccount.new
+end
+
+class CreateAccount < ActiveInteraction::Base
+  string :first_name, :last_name
+  
+  validates :first_name, :last_name,
+    presence: true
+    
+  def to_model
+    Account.new
+  end
+  
+  def execute
+    account = Account.new(inputs)
+    
+    unless account.save
+      errors.merge!(account.errors)
+    end
+    
+    account
+  end
+end
 ```
 
+```config/application.rb
+config.autoload_paths += Dir.glob("#{config.root}/app/interactions/")
 
+```
 
