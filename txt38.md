@@ -65,14 +65,58 @@ heroku run rake db:migrate
 heroku apps:info
 ```
 
+###### ActiveInteraction
+```rb
+def create
+  outcome = Reports::Create.run(reports_create_params)
+  
+  if outcome.valid?
+    redirect_to root_url, notice: 'create!'
+  else
+    flash.now[:alert] = 'error!'
+    render :new
+  end
+end
+
+
 
 ```
+
+```create.rb
+module Reports
+  class Create < ActiveInteraction::Base
+    object :order, class: Order
+    object :account, class: Account
+    string :content, default: nil
+    array :images, default: []
+    array :images, default: []
+    string :to_state, default: nil
+    
+    def execute
+      report = order.reports.buld(
+        content: content, images: images,
+        account: account, date: Time.current.to_date
+      )
+      
+      ActiveRecord::Base.transaction do
+        report.save!
+        
+        unless to_state&.to_sym == :accepted
+          compose(Notifications::Send)
+        end
+      end
+    end
+    
+    report
+  end
+end
 ```
 
-```
-```
-
-```
+```.rb
+object :purchase, class: Order
+object :account, class: Account
+string :content, default: nil
+array :images, default: []
 ```
 
 
