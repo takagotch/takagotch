@@ -151,14 +151,36 @@ class AddAndDouble < ActiveInteraction::Base
 end
 ```
 
+###### RailsAdmin
+```
+vi Gemfile
+# gem 'devise'
+
+
+
+
 
 ```
+
+```sh
+bundle install
+rails g devise:install
 ```
 
-```
-```
-
-```
+```app/views/layouts/application.html.erb
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <%= stylesheet_link_tag "application", :media => "all" %>
+  
+</head>
+<body>
+<p class="notice"><%= notice %></p>
+<p class="alert"><%= alert %></p>
+<%= yield %>
+</body>
+</html>
 ```
 
 
