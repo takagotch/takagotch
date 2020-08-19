@@ -385,28 +385,106 @@ config.autoload_paths += Dir.glob("#{config.root}/app/interactions/")
 
 ###### rabl
 
-```
+```sh
+vi Gemfile
+gem 'rabl'
+
+
 
 ```
 
-```
+```app/controllers/api_controller.rb
+class ApiController < ApplicationController
+
+  def updateUserName
+    current_user.name = params[:name]
+    
+    if current_user.save
+      render json: {result: true}
+    else
+      render json: {error: {code: Error::SAVE_FAILURE}}
+    end
+  end
+  
+  def getItems
+    @items = Item.all(:order => "created_at DESC")
+  end
+  
+end
 
 ```
 
-```
+```app/views/api/getItems.json.rabl
+collection @items, :root => :result, :object_root => false
+attribute :id, :name
+
+node(:photo_url) do |item|
+  item.photo.url
+end
 
 ```
 
-```
+```outpub =>
+{
+  "result": [
+    {
+      "id": 1, "name": "Takashi Yoshioka", "photo_url": "http://imgur.com/xxxxxx"
+    },
+    {
+      "id": 2, "name": "tkgcci tkvtv", "photo_url": "http://xxx"
+    }
+  ]
+}
 
 ```
 
-```
+```app/controllers/api_controller.rb
+class ApiController < ApplicationController
+  def getItemDetail
+    @item = Item.find(params[:id])
+  end
+end
+
 
 ```
 
-```
+```app/views/getItemDetail.json.rabl
+object false
+child(@item => :result) do
+  attribute :id, :name, :memo, :bought_at, :location_name, :price,
+      :user, :likes, :comments, :tags
 
+  node :photo_url do |item|
+    item.photo.rl
+  end
+  
+  child :user do
+    attribute :id, :name
+    
+    node :photo_url do |user|
+      user.photo.url
+    end
+    
+    child(:tags) do
+      attribute :name
+    end
+    
+    child(:like) do
+      attribute :user_id
+    end
+    
+    child(:comments) do
+      attribute :user, body, :created_at
+      
+      child(:user) do
+        attribute :id
+        
+        node :photo_url do |user|
+          user.photo.url
+        end
+      end
+    end
+  end
 ```
 
 ```
