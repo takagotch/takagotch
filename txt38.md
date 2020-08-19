@@ -165,6 +165,14 @@ vi Gemfile
 ```sh
 bundle install
 rails g devise:install
+rails g devise admin_user
+rails db:migrate
+vi Gemfile
+# gem 'rails_admin'
+bundle install
+rails g rails_admin:install
+rake db:migrate
+rails c
 ```
 
 ```app/views/layouts/application.html.erb
@@ -173,7 +181,8 @@ rails g devise:install
 <head>
   <title></title>
   <%= stylesheet_link_tag "application", :media => "all" %>
-  
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
 </head>
 <body>
 <p class="notice"><%= notice %></p>
@@ -184,10 +193,27 @@ rails g devise:install
 ```
 
 
-```
-```
+```app/models/admin_user.rb
+class AdminUser < ActiveRecord::Base
+  devise :database_authenticatable, :rememberable, :trackable, :validatable
+  
+  attr_accessible :email, :password, :password_confirmation, :remember_me
+end
 
 ```
+
+```db/migrate[timestamps]_devise_create_admin_user.rb
+class DeviseCreateAdminUsers < ActiveRecord::Migrate
+  def change
+    create_table(:admin_users) do |t|
+    
+    # t.string :reset_password_token
+    # t.datatime :reset_password_sent_at
+  end
+  
+  # add_index :admin_users, :reset_password_token, :unique => true
+end
+
 ```
 
 ```
