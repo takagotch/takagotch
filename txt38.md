@@ -66,7 +66,7 @@ heroku apps:info
 ```
 
 ###### ActiveInteraction
-```rb
+```app/interaction/accounts/create_account.rb
 def create
   outcome = Reports::Create.run(reports_create_params)
   
@@ -82,7 +82,7 @@ end
 
 ```
 
-```create.rb
+```app/interactions/create_account.rb
 module Reports
   class Create < ActiveInteraction::Base
     object :order, class: Order
@@ -120,13 +120,35 @@ array :images, default: []
 ```
 
 
-```
-```
-
-```
+```config/application.rb
+config.autoload_paths += Dir.glob("#{config.root}/app/interactions/*")
 ```
 
+```callbacks
+class AutomaticTransactionInteraction = ActiveInteraction::Base
+  def execute
+  end
+end
+
+class ManualTransactionInteraction < ActiveInteraction::Base
+  def execute
+    ActiveRecord::Base.transaction do
+    #
+    raise ActoveRecord::Rollback if invalid?
+    end
+  end
+end
+
 ```
+
+``` composition
+class AddAndDouble < ActiveInteraction::Base
+  import_filter Add
+  
+  def execute
+    compose(Add, inputs) * 2
+  end
+end
 ```
 
 
