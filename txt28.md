@@ -216,18 +216,168 @@ class Contact < ActiveRecord::Base
    validates :name_last, presence: true
 end
 ```
-######
+
+###### grape::formatter::roar
+```.rb
+class API < Grape::API
+  format :json
+  formatter :json, Grape::Formatter::Roar
+end
+
+module ProductRepresenter
+  include Roar::JSON
+  include Roar::Hypermedia
+  include Grape::Roar::Representer
+  
+  property :title
+  property :id
+end
+
+get 'product/:id' do
+  present Product.find(params[:id]), with: ProductRepresenter
+end
+
+module ProductsRepresenter
+  include Roar::JSON::HAL
+  include Roar::Hypermedia
+  include Grape::Roar::Representer
+  
+  collection:entries, extend: ProductRepresenter, as: :products, embedded: true
+end
+
+class ProductRepresenter < Grape::Roar::Decorator
+  include Roar::JSON
+  include Roar::Hypermedia
+  
+  link :self do |opts|
+    "#{request(opts).url}/#{represented.id}"
+  end
+  
+  private
+  
+  def request(opts)
+    Grape::Request.new(opts[:env])
+  end
+end
+
+get 'products' do
+  present Product.all, with: ProductsRepresenter
+end
+
 ```
+
+```model.rb
+class Item < ActiveRecord::Base
+  belongs_to :cart
+end
+
+class Cart < ActiveRecord::Base
+  has_many :items
+end
+
 ```
+
+```.rb
+class ItemEntity < Grape::Roar::Decorator
+  include Roar::JSON
+  include Roar::JSON::HAL
+  include Roar::Hypermedia
+  
+  include Grape::Roar::Extensions::Relations
+  
+  relation :belongs_to, :cart, embedded:true
+  
+  link_self
+end
+
+class CartEntity < Grape::Roar::Decorator
+  include Roar::JSON
+  include Roar::JSON::HAL
+  include Roar::Hypermedia
+  
+  include Grape::Roar::Extensions::Relations
+  
+  relation :has_many, :items, embedded: false
+  
+  link_self
+end
 ```
+
+```output
+{
+  "_embedded": {
+    "cart": {
+      "_links": {
+        "self": {
+          "href": "http://tkgcci.com/carts/1"
+        },
+        "items": [{
+          "href": "http://tkgcci.com/items/1"
+        }]
+      }
+    }
+  },
+  "_links": {
+    "self": {
+      "href": "http://example.org/items/1"
+    }
+  }
+}
+
+{
+  "": 
+}
 ```
+
+```adapter.rb
+module Extensions
+  module RelationalModels
+    module Adapter
+      class ActiveRecord < Base
+        include Validations::ActiveRecord
+        
+        valid_for { |klass| klass < ::ActiveRecord::Base }
+        
+        def collection_methods
+          @collection_metohds ||= %i(has_many has_and_belongs_to_many)
+        end
+        
+        def name_for_represented(represented)
+          klass_name = case represented
+                       when ::ActiveRecord::Relation
+                         represented.klass.name
+                       else
+                         represented.class.name
+                       end
+          klass_name.demodulize.pluralize.downcase             
+        end
+        
+        def single_entity_methods
+          @single_entity_methods ||= %i(has_one belongs_to)
+        end
+      end
+    end
+  end
+end
 ```
-```
-```
-```
-```
-```
-```
+
+```validateions.rb
+module ActiveRecord
+  include Validations::Misc
+  
+  def belongs_to_valid?(relation)
+    relation = klass.reflections[relation]
+    
+    return true if relation.is_a?(
+      ::ActiveRecord::Reflection::BelongsToReflection
+    )
+    
+    invalid_relation(
+      ::ActiveRecord::Reflection::BelongsToReflection,
+      relation.class
+    )
+  end
+end
 ```
 ```
 ```
