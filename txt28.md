@@ -425,70 +425,109 @@ json.set! :text, "TEXT"
 
 ```posts_controller.rb
 class Api::PostsController < ApplicationController
+
+  def index
+    @posts = Post.all
+  end
+
   def show
     @post = Post.find(params[:id])
   end
 end
 ```
+
+```show.json.jbuilder
+json.post do
+  json.merge! @post.attributes
+end
+```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
+
 ```
 ```
-```
-```
+
 
 
