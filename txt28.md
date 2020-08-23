@@ -414,9 +414,21 @@ Grape::Roar::Extensions::Relations::Exceptions::InvalidRelationError:
   Expected Mongoid::Relations::Referenced::One, got Mongoid::Relations::Referenced::Many!
 ```
 
+##### jbuilder
+```index.json.jbuilder
+json.text "TEXT"
+json.set! :text, "TEXT"
+
+
+
 ```
-```
-```
+
+```posts_controller.rb
+class Api::PostsController < ApplicationController
+  def show
+    @post = Post.find(params[:id])
+  end
+end
 ```
 ```
 ```
