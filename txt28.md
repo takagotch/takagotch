@@ -1,4 +1,4 @@
-###### Active_model_serializers
+##### Active_model_serializers
 ---
 
 ```sh
@@ -58,9 +58,116 @@ end
 {"books":[{"id":1, "title":"TITLE", "price":100, "publishered_at":null, "publisher_id":1},
 {"id":2,"title":"TITLE", "price":200, "published_at":null, "publisher_id":2}]}
 ```
+
+##### fast_jsonapi
+```sh
+rspec
+rails new fast_json_api --api
+vi Gemfile
++ gem 'fast_jsonapi'
+
 ```
+
+```recipe.rb
+class Recipe < ApplicationRecord
+  has_many :ingredients, dependent: :destroy
+end
+
 ```
+
+```ingredient.rb
+class Ingredient < ApplicationRecord
+  belongs_to :recipe
+end
+
 ```
+
+```.rb
+create_table :recipes do |t|
+end
+create_table :ingredients do |t|
+  t.references : recipe, null: false
+  t.string :name, null: false
+  t.string :quantity_and_unit, null: false
+  t.timestamps
+end
+
+```
+
+```output.rb
+Recipe.all.each do |recipe|
+  ingredients.each_with_index do |array, index|
+    name = array[0]
+    quantity_and_unit = array[1]
+    recipe.ingredients.create({
+      name: name,
+      quantity_and_unit: quantity_and_unit
+    })
+  end
+end
+```
+
+```.rb
+class Api::V1::RecipesController < ApplicationController
+end
+```
+
+```.sh
+rails g serializer recipe
+```
+
+```recipe.rb
+class RecipeSerializer
+  include FastJsonapi::ObjectSerializer
+  attributes
+end
+
+class RecipeSerializer
+  include FastJsonapi::ObjectSerializer
+  has_many :ingredients
+  attributes :title, :introduction
+end
+```
+```ingredient.rb
+class IngredientSerializer
+  include FastJsonapi::ObjectSerializer
+  belongs_to :recipe
+  attributes :name, :quantity_and_unit
+end
+```
+```recipe_controller.rb
+class Api::V1::RecipeController < ApplicationController
+  def show
+    recipe = Recipe.find(params[:id])
+    options = { include: %i[ingredients] }
+    json_string = RecipeSerializer.new(recipe).serialized_json
+    render json: json_string
+  end
+end
+```
+```output
+{
+  "data": {
+    "id": "1",
+    "type": "recipe",
+    "attributes": {
+      "title": "texttext...",
+      "introduction": "texttext...",
+    },
+    "": {}
+  },
+  "included": []
+}
+```
+
+```recipe.rb
+class RecipeSerializer
+  include FastJsonapi::ObjectSerializer
+  cache_options enabled: true, cache_length: 1.hours
+  has_many :ingredients
+  attributes :title, :introduction
+end
+
 ```
 
 ###### rack tracker, rack google analytics
