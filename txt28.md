@@ -190,10 +190,109 @@ end
 
 ```
 
+###### jsonapi-resources
+```contacts_controller.rb
+class ContactsController < ApplicationController
+  include JSONAPI::ActsAsResourceController
+  
+  protect_from_forgery with: :null_session
+end
+
+class ContactResource < JSONAPI::Resource
+  attributes :name_first, :name_last, :email, :twitter
+  attribute :name_full
+  
+  has_many :phone_numbers
+  
+  def name_full
+    "#{name_first} #{name_last}"
+  end
+end
+
+class Contact < ActiveRecord::Base
+   has_many :phone_numbers
+   
+   validates :name_first, presence: true
+   validates :name_last, presence: true
+end
+```
 ######
 ```
 ```
-
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
 ```
 ```
 
