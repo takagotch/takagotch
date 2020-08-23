@@ -442,7 +442,7 @@ json.post do
 end
 ```
 
-```
+```.rb
 json.total_pages @events.total_pages
 
 # =>
@@ -452,6 +452,26 @@ json.total_pages @events.total_pages
 #   "total_pages": 10
 #  }
 #
+
+if @event.image.present?
+end
+
+json.finished @event.finished?
+class Event < ApplicationRecord
+  def finished?
+    return true if event_dates.blank?
+    event_dates.last.date < Date.current
+  end
+end
+
+json.array!(events) do |event|
+  if group_event == event
+    next
+  end
+  json.id event.id
+end
+
+
 ```
 
 ```
