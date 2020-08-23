@@ -379,8 +379,41 @@ module ActiveRecord
   end
 end
 ```
+
+```urimapping.rb
+class BarEntity < Grape::Roar::Decorator
+  include Roar::JSON
+  include Roar::JSON::HAL
+  include Roar::Hypermedia
+  
+  include Grape::Roar::Extensions::Relations
+  
+  map_resource_path do |_opts, object, relation_name|
+    "#{relation_name}/#{object.id}"
+  end
+  
+  relation :has_many, :bars, embedded: false
+end
+
+class BarEntity < Grape::Roar::Decorator
+  include Roar::JSON
+  include Roar::JSON::HAL
+  include Roar::Hypermedia
+  
+  include Grape::Roar::Extensions::Relations
+  
+  map_base_url do |opts|
+    request = Grape::Request.new(opts[:env])
+    "#{request.base_url}#{request.script_name}"
+  end
+  
+  relation :has_many, :bars, embedded: false
+end
+
+Grape::Roar::Extensions::Relations::Exceptions::InvalidRelationError:
+  Expected Mongoid::Relations::Referenced::One, got Mongoid::Relations::Referenced::Many!
 ```
-```
+
 ```
 ```
 ```
