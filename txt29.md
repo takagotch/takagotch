@@ -1,11 +1,37 @@
-######
+###### CarryWave
 ---
 
-```
+```app/uploaders/avatar_uploader.rb
+class AvatarUploader < CarrierWave::uploader::Base
+  storage :file
+end
+
+uploader = Avatarloader.new
+uploader.store!(my_file)
+uploader.retrieve_from_store!('my_file.png')
+
+class User < ActiveRecord::Base
+  mount_uploader :avatar, AvatarUploader
+end
+
+u = User.new
+u.avatar = params[:file] 
+
+File.open('somewhere') do |f|
+  u.avatar = f
+end
+
+u.save!
+u.avatar.url          # => '/url/to/file.png'
+u.avatar.current_path # => 'path/to/file.png'
+u.avatar_identifier   # => 'file.png'
+
 ```
 
 
-```
+```sh
+rails g migration add_avatar_to_users avatar:string
+rails db:migrate
 ```
 
 ```
