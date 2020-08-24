@@ -134,7 +134,16 @@ service.subscribe "call_filter.html_pipeline" do |event, start, ending, transact
   payload[:result][:output] # => 
 end
 
+EmojiPipeline = Pipeline.new [
+  PlainTextInputFilter,
+  EmojiFilter
+], context
 
+plain_text = "Gutentag! :wave:"
+EmojiPipeline.call(plain_text)
+
+html_fragment = "This is outside of an html element, but <strong>this isn't. :+1:</strong>"
+EmojiPipeline.call("<div>#{html_fragment}</div>")
 ```
 
 ```
