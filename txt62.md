@@ -32,18 +32,109 @@ bundle exec rake compile test
 doc = Nokogiri.XML('<foo><bar /></foo>', nil, 'EUC-JP')
 ```
 
-###### 
-```
-```
+###### html-pipeline
+```.rb
+require 'html/pipeline'
+filter = HTML::Pipeline::MarkdownFilter.new("Hi **world**!")
+filter.call
+
+pipeline = HTML::Pipeline.new [
+  HTML::Pipeline::MarkdownFilter,
+  HTML::Pipeline::SyntaxHighlightFilter
+]
+result = pipeline.call <<-CODE
+This is *great*:
+
+  some_code(:first)
+  
+CODE
+result[:output].to_s
 
 ```
+
+```rb
+filter = HTML::Pipeline::MarkdownFilter.new("Hi **world**!", :gfm => false)
+filter.call
+
+context = {
+  :asset_root => "http://tkgcci.com/where/your/images/live/icons",
+  :base_url   => "http://tkgcci.com" 
+}
+
+SimplePipeline = Pipeline.new [
+  SanitizationFilter,
+  TableOfContentsFilter, 
+  CamoFilter,
+  ImageMaxWidthFilter,
+  SyntaxHighlightFilter,
+  EmojiFilter,
+  AutolinkFilter
+], context
+
+MarkdownPipeline = Pipeline.new [
+  MarkdownFilter,
+  SanitizationFilter,
+  CamoFilter,
+  ImageMaxWidthFilter,
+  HttpsFilter,
+  MentionFilter,
+  EmojiFilter,
+  SyntaxHighlightFilter
+], context.merge(:grm => true)
+
+NonGFMMarkdownPipeline = Pipeline.new(MarkdownPipeline.filters, context.merge(:gfm => false))
+
+HtmlEmailPipeline = Pipeline.new [
+  PlainTextInputFilter,
+  ImageMaxWidthFilter
+], {}
+
+EmojiPipeline = Pipeline.new [
+  PlainTextInputFilter,
+  EmojiFilter
+], context
 ```
 
-```
+```extending.rb
+require 'uri'
+
+class RootRelativeFilter < HTML::Pipeline::Filter
+  def call
+    doc.search("img").each do |img|
+      next if img['src'].nil?
+      src = img['src'].strip
+      if src.start_with? '/'
+        img["src"] = URI.join(context[:base_url], src).to_s
+      end
+    end
+  end
+  
+end
+
+Pipeline.new [ RootRelativeFilter ], { :base_url => 'http://tkgcci.com' }
 ```
 
 
-```
+```instrumenting.rb
+service = ActiveSupport::Notifications
+
+pipeline = HTML::Pipeline.new [MarkdownFilter], context
+pipeline.setup_instrumentation "MarkdownPipeline", srvice
+
+HTML::Pipeline.default_instrumentation_service = service
+pipeline = HTML::Pipeline.new [MarkdownFilter], context
+pipeline.setup_instrumentation "MarkdownPipeline"
+
+service.subscribe "call_filter.html_pipeline" do |event, start, ending, transaction |
+  payload[:pipeline] # =>
+  payload[:filter]   # =>
+  payload[:doc]      # =>
+  payload[:context]  # =>
+  payload[:result]   # =>
+  payload[:result][:output] # => 
+end
+
+
 ```
 
 ```
