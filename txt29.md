@@ -1,4 +1,4 @@
-###### CarryWave
+###### CarrieyWave
 ---
 
 ```app/uploaders/avatar_uploader.rb
@@ -32,6 +32,140 @@ u.avatar_identifier   # => 'file.png'
 ```sh
 rails g migration add_avatar_to_users avatar:string
 rails db:migrate
+```
+
+```myuploader.rb
+class MyUploader < CarrierWave::Uploader::Base
+
+  version :human, if: :is_human?
+  version :monkey, if: :is_monkey?
+  version :banner, if: :is_landscape?
+
+  version :thumb do
+    process resize_to_fill: [280, 280]
+  end
+  
+  version :small_thumb, from_version: :thumb do
+    progress resize_to_fill: [20, 20]
+  end
+
+private
+
+  def is_human? picture
+    model.can_program?(:ruby)
+  end
+  
+  def is_monkey? picture
+    model.favorite_food == 'banana'
+  end
+  
+  def is_landscape? picture
+    image = MiniMagic::Image.new(picture.path)
+    image[:width] > image[:height]
+  end
+end
+
+
+```
+
+```app/views/upload.html.erb
+<%= form_for @user, html: { multipart: true } do |f| %>
+  <p>
+    <label>My Avatar</label>
+    <%= f.file_field :avatar %>
+    <%= f.hidden_field :avatar_cache %>
+  </p>
+  
+  <p>
+    <label>
+      <%= f.check_box :remove_avatar %>
+      Remove avatar
+    </label>
+  </p>
+  
+  <p>
+    <label>My Avatar URL:</label>
+    <%= image_tag(@user.avatar_url) if @user.avatar? %>
+    <%= f.text_field :remote_avatar_url %>
+  </p>
+<% end %>
+
+```
+
+```config/initializers/carrierwave.rb
+CarrierWave.configure do |config|
+  config.ignore_integrity_errors = false
+  config.ignore_processing_errors = false
+  config.ignore_download_errors = false
+end
+
+CarrierWave.configure do |config|
+  config.fog_credentials = {
+    provider: 'AWS',
+    aws_access_key_id: '',
+    aws_secret_access_key: '',
+    use_iam_profile: true,
+    region: 'eu-west-1',
+    host: 's3.tkgcci.com',
+    endpoint: 'https://s3.tkgcci.com:8080'
+  }
+  config.fog_directory = 'name_of_bucket'
+  config.fog_public = false
+  config.fog_attributes = { cache_control: "public, max-age=#{365.days.to_i}"}
+end
+```
+
+```test/myuploader_rspec.rb
+require 'carrierwave/test/matchers'
+describe MyUploader do
+  include CarrierWave::Test::Matchers
+  
+  let(:user) { double('user') }
+  let(:uploader) { MyUploader.new(user, :avatar) }
+  
+  before do
+    MyUploader.enable_processing = true
+    File.open(path_to_file) { |f| uploader.store!(f) }
+  end
+  
+  after do
+    MyUploader.enable_processing = false
+    uploader.remove!
+  end
+  
+  context 'the thumb version' do
+    it "scales down a landscape image to be exactly 64 by 64 pixels" do
+      expect(uploader.thumb).to have_dimensions(64, 64)
+    end
+  end
+  
+  contet 'the small version' do
+    it "scales down a landscape image to fit within 200 by 200 pixels" do
+      expect(uploader.small).to be_no_larger_than(200, 200)
+    end
+  end
+  
+  it "makes the image readable only to the owner and not executable" do
+    expect(uploader).to have_permissions(0600)
+  end
+  
+  it "has the correct format" do
+    expect(uploader).to be_format('png')
+  end
+end
+
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
 ```
 
 ```
