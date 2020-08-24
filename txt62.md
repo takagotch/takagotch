@@ -156,7 +156,7 @@ ja:
           role: 'Select your role'
 
 ```
-###### wrappers api
+###### simple form, wrappers api
 ```.rb
 config.wrappers tag: :div, class: :input,
                 error_class: :field_with_errors,
@@ -173,11 +173,28 @@ config.wrappers tag: :div, class: :input,
 end
 ```
 
+```config/initializers/simple_form.rb
+Dir[Rails.root.join('lib/components/**/*.rb')].each { |f| require f }
 ```
 
+```lib/components/numbers_component.rb
+module NumbersComponent
+  def number(wrapper_options = nil)
+    @number ||= begin
+      options[:number].to_s.html_safe if options[:number].present?
+    end
+  end
+end
+
+SimpleForm.include_component(NumberComponent)
 ```
 
-```
+```.rb
+class User
+  include ActiveModel::Model
+  
+  attr_accessor :id, :name
+end
 
 ```
 
