@@ -1,20 +1,38 @@
-###### 
+###### nokogiri
 ---
 
+```.rb
+require 'nokogiri'
+require 'open-uri'
+
+doc = Nokogiri::HTML(URI.open('https://nokogiri.org/tutorials/installing_nokogiri.html'))
+
+puts "### Search for nodes by css"
+doc.css('nav ul.menu li a', 'article h2').each do |link|
+end
+
+puts "### Search for nodes by xpath"
+doc.xpath('//nav//ul//li/a', '//article//h2').each do |link|
+end
+
+puts "### Or mix and match."
+doc.search('nav ul.menu li a', '//article//h2').each do |link|
+  puts link.content
+end
 
 
 ```
 
-
+```sh
+bundle install
+bundle exec rake compile test
 ```
 
-```
-```
-
-```
+```.rb
+doc = Nokogiri.XML('<foo><bar /></foo>', nil, 'EUC-JP')
 ```
 
-
+###### 
 ```
 ```
 
