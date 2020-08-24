@@ -590,25 +590,124 @@ end
 
 ```
 
-```
+###### her, ActiveRecord
+```app/models/access_token.rb
+require 'base64'
+
+class AccessToken
+  def self.get
+    client = Faraday.new 'OauthSERVER URI' do |b|
+      b.adapter Faraday.default_adapter
+      b.authorization :Basic, Base64.encode64('client_id:client_secret')
+      b.response :json
+    end
+  
+    response = client.post 'ACCESSTOKEN endpoint'
+    response.body['access_token']
+  end
+end
+
+AccessToken.get # => 'access_token'
 ```
 
-```
-```
+```lib/faraday/client_credential.rb
+class ClientCredential < Faraday::Middleware
+  def call(env)
+    env[:request_headers]['Authorization'] = "Bearer #{AccessToken.get}"
+    @app.call(env)
+  end
+end
 
 ```
+
+```config/initializers/her.rb
+Her::API.setup url: Settings.custom.server do |c|
+  #req
+  c.use ClientCredential
+  
+  # res
+  
+  # adapter
+  
+end
 ```
 
-```
+```config/initializers/her.rb
+Her::API.setup url: Settings.custom.server do |c|
+  # req
+  c.use Faraday::Request::Retry, max: 1, interval: 0.05,
+                                 interval_randomness: 0.5, backoff_factor: 2,
+                                 exceptions: [CustomRaiseError::UnauthorizedError]
+  c.use ClientCredential
+  
+  # res
+  
+  # adapter
+  
+end
 ```
 
-```
+```lib/faraday/custom_raise_error.rb
+class CustomRaiseError < Faraday::Response::RaiseError
+  def on_complete(env)
+    case env[:status]
+    
+    when 401
+      raise UnauthorizedError, response_value(env)
+    when 404
+      raise Faraday::Error::ResourceNotFound, response_values(env)
+    when 407
+      raise Faraday::Error::ConnectionFailed, %{407 "Proxy Authentication Required "}
+    when ClientErrorStatuses
+      raise Faraday::Error::ClientError, response_values(env)
+  end
+  
+  class UnauthorizedError < Faraday::ClientError; end
+end
 ```
 
-```
+```config/initializers/her.rb
+Her::API.setup url: Settings.custom.server do |c|
+  # req
+  c.use Faraday::Request::Retry, max: 1, interval: 0.05,
+                                 interval_randomness: 0.5, backoff_factor: 2,
+                                 exceptions: [CustomRaiseError::UnauthorizedError]
+  c.use ClientCredential
+
+  # res
+  c.use CustomRaiseError
+  
+  # adapter
+  
+end
 ```
 
-```
+```spec/models/resource_retry_spec.rb
+require 'rails_helper'
+require 'webmock/rspec'
+
+RSpec.describe Resource, type: :model do
+  describe '401 ERR req' do
+    before do
+      @access_token_stub = WebMock.stub_request(:post, 'ACCESSTOKEN endpoint')
+        to_return(status: 200, body: %Q{ "access_token": "access_token" }!)
+    end
+  
+    before do
+      @resource_stub = WebMock.stub_request(:get, 'RESOURCE endpoint').to_return(stauts: )
+    end
+  end
+  
+  it 'ACCESSTOKEN REQ 2 times' do
+    expect{ Resource.find(1) }.to raise_exception(CustomRaiseError::UnauthorizedError)
+    expect(@access_token_stub).to have_been_made.times(2)
+  end
+  
+  it 'API REQ 2 times' do
+    expect{ Resource.find(1) }.to raise_exception(CustomRaiseError::UnauthorizedError)
+    except(@resource_stub).to have_been_made.times(2)
+  end
+end
 ```
 
 ```
