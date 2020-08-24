@@ -66,3 +66,88 @@ Acl9.config.reset!
 ```
 
 
+######
+---
+
+```
+```
+
+
+```
+```
+
+```
+```
+
+######
+---
+
+```
+```
+
+
+```
+```
+
+```
+```
+
+######
+---
+
+```
+```
+
+
+```
+```
+
+```
+```
+
+###### blazer
+---
+
+```sh
+rails g blazer:install
+rails db:migrate
+```
+
+
+```config/routes.rb
+mount Blazer::Engine, at: "blazer"
+
+ENV["BLAZER_DATABASE_URL"] = "postgres://user:password@hostname:5432/database"
+```
+
+```config/environments/production.rb
+config.action_mailer.default_url_options = {host: "tkgcci.com"}
+```
+
+---
+
+```
+# Basic Authentication
+ENV["BLAZER_USERNAME"] = "tky"
+ENV["BLAZER_PASSWORD"] = "secret"
+# Devise
+authenticate :user, ->(user) { user.admin? } do
+  mount Blazer::Engine, at: "blazer"
+end
+
+```
+
+
+```Encrypto_data.rb
+Blazer.transform_variable = lambda do |name, value|
+  value = User.generate_email_bidx(value) if name == "email_bidx"
+  value
+end
+
+```
+
+```pg.yml
+data_sources:
+  my_source:
+    url: postgres://user:password@hostname:5432/database
+```
