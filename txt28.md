@@ -474,25 +474,120 @@ end
 
 ```
 
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
-
-```
+##### grape, jbuilder
+```app/api/article.rb
+class API < Grape::API
+  format :json
+  formatter :json, Grape::Formatter::Jbuilder
+  
+  get '/', jbuilder: 'article/index' do
+    @articles = Article.all
+  end
+end
 ```
 
-```
-```
+```sh
+vi Gemfile
++ gem 'jbuilder'
++ gem 'grape'
++ gem 'grape-jbuilder'
+bundle install
+
 
 ```
+
+```app/views/api/article/index.jbuilder
+json.articles @articles do |article|
+  json.(article, :id, :title)
+end
+```
+
+```result
+{
+  articles: [
+    {
+      "id": 1,
+      "title": "TITLE1",
+    },
+    {
+      "id": 2,
+      "title": "TITLE2",
+    }
+  ]
+}
+```
+
+```config/application.rb
+module Extensions
+  module RelationalModel
+    module adapter
+      class Application < Rails::Application
+        config.paths.add "", glob: "**/*.rb"
+        config.autoload_paths += %W(#{config.root}/app/api)
+        
+        config.middleware.use(Rack::Config) do |env|
+          env['api.tilt.root'] = Rails.root.join 'app', 'views', 'api'
+        end
+      end
+    end
+  end
+end
+```
+
+```app/views/messages/show.json.jbuilder
+json.content format_content(@message.content)
+json.(@message, :created_at, :updated_at)
+
+json.author do
+  json.name @message.creator.name.familiar
+  json.email_address @message.creator.email_address_with_name
+  json.url url_for(@message.creator, format: :json)
+end
+
+if current_user.admin?
+  json.visitors calculate_visitors(@message)
+end
+
+json.comments @message.comments, :content, :created_at
+
+json.attachments @message.attachments do |attachment|
+  json.filename attachment.filename
+  json.url url_for(attachment)
+end
+
+```
+
+```result
+{
+  "content": "<p>This is <i>serious</i> monkey business</p>",
+  "": "",
+  "": "",
+  "": {},
+  
+  "": 15,
+  "": [],
+  
+  "attachments": [
+    { "filename": "forcast.xls", "url": "http://tkgcci.com/downloads/forecast.xls" },
+    { "filename": "presentation.pdf", "url": "http://tkgcci.com/downloads/presentation.pdf" }
+  ]
+}
+```
+
+```.rb
+json.set! :author do
+  json.set! :name, 'tky'
+end
+# => {"author": { "name": "tky" }}
+
+hash = { author: { name: "tky" } }
+json.post do
+  json.title "Merge HOWTO"
+  json.merge! hash
+end
+
+# => "post": { "title": "Merge HOWTO", "author": { "name": "tky" }}
+
 ```
 
 ```
