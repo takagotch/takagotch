@@ -1,4 +1,4 @@
-###### CarrieyWave
+###### CarrierWave
 ---
 
 ```app/uploaders/avatar_uploader.rb
