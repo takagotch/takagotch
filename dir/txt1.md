@@ -101,11 +101,34 @@ ja:
     tag_remove_follow: UN FOLLOWED!
 ```
 
-```
+###### active record
+
+```app/models/client.rb
+class Client < ApplicationRecord
+  has_one :address
+  has_many :orders
+  has_and_belongs_to_many :roles
+end
+
+class Address < ApplicationRecord
+  belongs_to :client
+end
+
+class Order < ApplicationRecord
+  belongs_to :client, counter_cache: true
+end
+
+class Role < ApplicationRecord
+  has_and_belongs_to_many :clients
+end
+
 ```
 
 
-```
+```.rb
+clients = Client.find(10)
+
+
 ```
 
 ```
