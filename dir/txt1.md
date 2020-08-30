@@ -1,3 +1,106 @@
+###### rails-i18n
+
+```config/application.rb
+require_relative 'boot'
+require 'rails/all'
+
+Bundler.require(*Rails.groups)
+
+module BoardApp
+  class Application < Rails::Application
+    config.time_zone = 'Osaka'
+    config.active_record.default_timezone = :local
+    #
+    config.i18n.default_locale = :ja
+    
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
+  end
+end
+
+
+```
+
+```sh
+vi Gemfile
++ gem 'rails-i18n', '~> 5.1'
++ gem 'rails-i18n', '~> 4.0'
+
+```
+
+
+```config/locales/views/users/ja.yml
+ja:
+  users:
+    index:
+      title: 'USER LIST'
+    show:
+      title: '%{user_name} USER INFO'
+    edit:
+      title: '%{user_name} USER INFO EDIT'
+      
+  activerecord:
+    models:
+      user: USER
+      board: BOARD
+      
+    attributes:
+      user:
+        id: ID
+        first_name: NAME
+        last_name: FIRST NAME
+        email: EMAIL
+        file: PROFILE PIC
+        crypted_password: PASS
+  attributes:
+    created_at: DATE CREATED
+    updated_at: DATE UPDATED
+```
+
+```app/views/users/index.html.erb
+<%= t '.title' %>
+
+<%= t 'users.index.title' %>
+
+<%= l Time.now %>
+
+<%= l nil %>
+
+
+
+```
+
+
+```
+```
+
+```
+```
+
+
+```
+```
+
+```
+```
+
+
+```
+```
+
+```
+```
+
+
+```
+```
+
+```
+```
+
+
+
+
+
 ###### guard
 ---
 
@@ -207,47 +310,4 @@ Geocoder.configure(
 
 ```
 ```
-
-
-```
-```
-
-```
-```
-
-
-```
-```
-
-```
-```
-
-
-```
-```
-
-```
-```
-
-
-```
-```
-
-```
-```
-
-
-```
-```
-
-```
-```
-
-
-```
-```
-
-```
-```
-
 
