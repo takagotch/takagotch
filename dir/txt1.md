@@ -65,12 +65,40 @@ ja:
 
 <%= l nil %>
 
+<%= l nil, default: '' %>
+
+<li><%= User.model_name.human %></li>
+<li><%= User.human_attribute_name(:id) %></li>
+<li><%= User.human_attribute_name(:email) %></li>
 
 
 ```
 
 
-```
+```ja.yml
+ja:
+  dictionary:
+    messages:
+      hello_user: 'HELLO%{user_name}'
+    words:
+      user: &user 'USER INFO'
+      user_copy: *user
+  helpers:
+    user:
+      welcome: 'WELCOME!'
+  errors:
+    nanikore_error: 'ERR!'
+  flash:
+    new: CREATED!
+    updated: UPDATED!
+    failed: ERR!
+    destory: DELETE!
+    login: LOGIN!
+    logout: LOGOUT!
+    limited_access: UNAUTHORIZED!
+    tag_follow: FOLLOWED!
+    tag_not_follow: COUDNT FOLLOWED!
+    tag_remove_follow: UN FOLLOWED!
 ```
 
 ```
