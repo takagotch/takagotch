@@ -134,20 +134,90 @@ clients = Client.find(10)
 ```
 ```
 
+###### RoRqr
 
-```
-```
+```sh
+vi Gemfile
++ gem 'rqrcode'
+bundle install
 
-```
-```
-
-
-```
-```
-
-```
+./bin/setup
+bundle exec rspec
+./gin/console
 ```
 
+```qr/basic.rb
+require 'rqrcode'
+
+qr = RQRCode::QRCode.new('http://github.com')
+# qrcode = RQRCodeCore::QRCode.new('REGISTERION TKGCCI', size: 1, level: :m, mode: alphanumeric)
+result = ''
+
+qr.qrcode.modules.each do |row|
+  row.each do |col|
+    result << (col ? 'X' : 'O')
+  end
+  
+  result << "\n"
+end
+
+puts result
+
+
+# console
+require 'rqrcode'
+
+qr = RQRCode::QRCode.new('http://tkgcci.com', size: 4, level: :h)
+
+puts qr.to_s
+
+```
+
+
+```qr/svg.rb
+require 'rqrcode'
+qrcode = RQRCode::QRCode.new("http://github.com/")
+
+svg = qrcode.as_svg(
+  offset: 0,
+  color: '000',
+  shape_rendering: 'crispEdges',
+  module_size: 6,
+  standalone: true
+)
+
+```
+
+```qr/ansi.rb
+require 'rqrcode'
+qrcode = RQRCode::QRCode.new("http://github.com/")
+
+svg = qrcode.as_ansi(
+  light: "\033[47m", dark: "\033[40m",
+  fill_character: '  ',
+  quiet_zone_size: 4
+)
+```
+
+```qr/png.rb
+require 'rqrcode'
+
+qrcode = RQRCode::QRCode.new("http://github.com/")
+
+png = qrcode.as_png(
+  bit_depth: 1,
+  border_modules: 4,
+  color: 'black',
+  file: nil,
+  fill: 'white',
+  module_px_size: 6,
+  resize_exactly_to: false,
+  resize_gte_to: false,
+  size: 120
+)
+
+IO.binwrite("/tmp/github-qrcode.png", png.to_s)
+```
 
 
 
