@@ -124,25 +124,72 @@ table
 = link_to 'TOP', root_path              
 ```
 
-```
-```
+```Gemfile
+group :development, :test do
+  gem 'bullet'
+end
 
 ```
+
+```sh
+bundle install
+
+curl http://localhost:3000/
 ```
 
-```
+```development.rb
+config.after_initialize do
+  Bullet.enable = true
+  Bullet.alert = true
+  Bullet.bullet_logger = true
+  Bullet.console = true
+  Bullet.rails_logger = true
+  Bullet.add_footer = true
+end
 ```
 
-```
+```student_controller.rb
+class StudentsController < ApplicationController
+  def index
+    @students = @q.result.includes(:department, :subjects)
+  end
+  
+  def search
+    @q = Student.search(search_params)
+    @students = @q.result.includes(:department, :subjects)
+  end
+  
+end
 ```
 
-```
+```_search_form.html.slim
+= search_form_for(@q, url:search_path) do |f|
+  p
+    = f.label :name_cont, 'NAME'
+    = f.search_field :name_cont
+  = f.submit
 ```
 
-```
+```students_controller.rb
+def search_params
+  params.require(:q).permit(:name_cont)
+end
 ```
 
+```student_controller.rb
+def index 
+  @q = Student.ransack(params[:q])
+  @departments = Department.all
+  @students = @q.result.includes(:department, :subjects)
+end
 ```
+
+```_search_form.html.slim
+= search_form_for(@q, url:search_path) do |f|
+  p
+    = f.label :dpartment_id_eq, 'DEPARTMENT'
+    = f.collection_select :department_id_eq, @departments, :id, :name, :include_blank => 'NO CATEGORRY'
+  = f.submit    
 ```
 
 ```
