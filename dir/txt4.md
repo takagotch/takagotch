@@ -18,7 +18,7 @@ bundle exec rails db:migrate
 bundle exec rails db:seed
 bundle exec rails g controller students index search
 
-
+bundle exec rails s
 ```
 
 ```departmetn.rb
@@ -105,7 +105,23 @@ table
 = f.submit
 ```
 
-```
+```view/students/search.html.slim
+h1
+  | SEARCH RESULT
+table 
+ - @students.each do |student|
+   tr
+     td 
+       = student.name
+     td
+       = student.sex
+     td 
+       = student.age
+     td 
+       = student.department.name
+     td
+       = student.subjects.map{|subject_id| Subject.find(subject_id).name}.join(', ')
+= link_to 'TOP', root_path              
 ```
 
 ```
