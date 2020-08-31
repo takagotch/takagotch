@@ -313,6 +313,11 @@ rake resque:workers
 sudo apt-get install redis-server
 redis-server
 
+
+./bin/rails c
+QUEUE=resque_sample bundle exec rake resque:work
+
+
 ```
 
 ```lib/tasks/resque.rake
@@ -320,7 +325,12 @@ require 'resque/tasks'
 task "resque:setup" => :environment
 ```
 
-```
+```config/resque.yml
+redis:
+  test: localhost:6379
+  development: localhost:6379
+  staging: redis.example.com:6379
+  production: redis.example.com:6379
 ```
 
 ```archive.rb
@@ -344,7 +354,18 @@ klass.perform(*args) if klass.respond_to? :perform
 
 Archive.perform(44, 'masterbrew')
 
+ResqueDemo.perform_async("test1")
+ResqueDemo.perform_async("test2")
+redis-cli
 
+QUEUES=resque_job bundle exec rake resque:work
+keys *
+
+QUEUES=high,low bundle exec rake resque:work
+QUEUE=resque_job bundle exec rake environment resque:work
+
+INTERVAL=0.1 QUEUE=resque_job bundle exec rake resque:work
+Resque.logger = Logger.new(Rails.root.join('log', "#{Rails.env}_resque.log"))
 ```
 
 ```config/initializers/resque.rb
@@ -364,12 +385,38 @@ class NullDataStore
 end
 
 Resque.stat_data_store = NullDataStore.new
+
+
+resque_config = YAML.load_file(Rails.root.join('config', redis.yml))
+Resque.redis = resque_config['redis']["#{Rails.env}"]
+
+Resque.redis.namespace = "resque:task_notes"
 ```
 
-```
-```
+```app/workers/resque_job.rb
+class ResqueJob
+  @queue = :resque_job
+  
+  class << self
+    def perform(message)
+      puts message
+    end
+    
+    def self.perform_async(message)
+      Resque.enqueue(self, message)
+    end
+  end
+end
+
+klass, args = Resque.reserve(:file_serve)
+klass.perform(*args) if klass.respond_to? :perform
+
+QUEUE=resque_job bundle exec rake resque:work
 
 ```
+
+```lib/tasks/resque.rake
+task "resque:setup" => :environment
 ```
 
 ```
