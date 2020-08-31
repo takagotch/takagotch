@@ -15,7 +15,8 @@ budnle exec rails g model student_subject student:references subject:references
 
 bundle exec rails db:migrate
 
-
+bundle exec rails db:seed
+bundle exec rails g controller students index search
 
 
 ```
@@ -41,19 +42,67 @@ class Student < ApplicationRecord
 end
 ```
 
-```
-```
-
-```
-```
-
-```
-```
-
-```
+```seeds.rb
+Department.create()
+Department.create()
+Department.create()
+Department.create()
+Subject.create(name:'')
+StudentSubject.create(student_id:1, subject_id:1)
+StudentSubject.create(student_id:1, subject_id:2)
 ```
 
+```students_controller.rb
+class StudentController < ApplicationController
+  def index
+    @q = Student.ransack(params[:q])
+    @students = @q.result(distinct: true)
+  end
+  
+  def search
+    @q = Student.search(search_params)
+    @students = @q.result(distinct: true)
+  end
+  
+  private
+  def search_params
+    params.require(:q).permit!
+  end
+end
+
 ```
+
+```routes.rb
+Rails.application.routes.draw do
+  root to: 'students#index'
+  get 'search', to: 'students#search'
+end
+```
+
+```view/students/index.html.slim
+h1
+  | STUDENTS SEARCH
+= render 'search_form'
+table
+ - @students.each do |student|
+   tr
+     td
+       = student.name
+     td
+       = student.sex
+     td
+       = student.age
+     td 
+       = student.department.name
+     td 
+       = student.subjects.map{|subject_id| Subject.find(subject_id).name}.join(', ')
+
+```
+
+```views/students/_search_form.html.slim
+= search_form_for(@q, url:search_path) do |f|
+
+= f.submit
 ```
 
 ```
