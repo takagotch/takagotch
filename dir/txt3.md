@@ -136,7 +136,32 @@ vi Gemfile
 + gem 'redis-namespace'
 bundle install
 
-rails g sidekiq:worker 
+rails g sidekiq:worker EventWorker
+bundle exec sidekiq
+
+rails c
+CreateTicket.perform_async('Create_ticket')
+CreateTicket.perform_in(3.hours, 'CreateTicket', 1)
+CreateTicket.perform_at(3.hours.from_now, 'CreateTicket', 1)
+
+bundle exec cap production deploy
+bundle exec cap production sidekiq:start
+
+sudo yum install -y monit
+sudo chkconfig monit on
+
+sudo service monit start
+
+sudo monit status
+
+vi Gemfile
++ gem 'resque', :require => 'resque/server'
+bundle install
+
+rails c
+Resque.enqueue(CreateTicket, "CreateTicekt")
+
+
 ```
 
 ```app/jobs/create_tickets_job.rb
@@ -175,7 +200,97 @@ Sidekiq.configure_client do |config|
 end
 ```
 
+```app/workers/EventWorker.rb
+class EventWorker
+  include Sidekiq::Worker
+  
+  def perform(data)
+    Rails.logger.debug(data)
+  end
+  
+end
+
+
 ```
+
+```config/routes.rb
+require 'sidekiq/web'
+mount Sidekiq::Web => '/sidekiq'
+```
+
+```Gemfile
+group :development, :test do
+  gem 'capistrano-sidekiq', github: 'seuros/capistrano-sidekiq'
+end
+```
+
+```config/deploy/production.rb
+set :rails_env, "production"
+set :unicorn_rack_env, "production"
+set :pty, false
+
+role :app, %w{vagrnnt@192.168.33.10}
+role :web, %w{vagrant@192.168.33.10}
+role :db,  %w{vagrant@192.168.33.10}
+
+server '', user: '', roles: %w{web app}
+
+set :ssh_options, {
+  keys: %w{/home/vagrant/.ssh/id_rsa},
+  forward_agent: false
+  auth_methods: %w{publickey}
+}
+```
+
+```Capfile
+require 'capistrano/sidekiq'
+```
+
+```config/deploy/production.rb
+set :sidekiq_role, :batch
+role :batch, %w{vagrant@192.168.33.10}
+server '192.168.33.10', user: 'vagrant', roles: %w{batch}
+```
+
+```/etc/monit.conf
+set httpd port 2812 adn
+  allow localhost
+```
+
+```.rb
+require 'capistrano/sidekiq/monit'
+```
+
+```config/initializers/resque.rb
+case Rails.env
+  when 'production' then
+    Resque.redis = 'prd.redis-example.com'
+  when 'staging' then
+    Resque.redis = 'stg-example.com'
+  else
+    Resque.redis = '127.0.0.1'
+end
+Resque.redis.namespace = "resque:prj-name:#{Rails.env}"
+
+```
+
+```app/workers/CreateTicket.rb
+class CreateTicket
+  @queue = :default
+  
+  def self.perform(data)
+    Rails.logger.debug(data)
+  end
+end
+
+```
+
+```lib/tasks/resque.rake
+require 'resque/tasks'
+```
+
+```config/routes.rb
+mount Resque::Server, :at => "/resque"
 ```
 
 ```
@@ -184,39 +299,7 @@ end
 ```
 ```
 
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
-
+###### resque .rb
 ```
 ```
 
