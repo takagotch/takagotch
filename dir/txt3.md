@@ -1,4 +1,4 @@
-#### sidekiq
+#### sidekiq, resque
 ---
 
 
@@ -125,12 +125,54 @@ mount Sidekiq::Web => '/sidekiq'
 ```.sh
 ./bin/rails g job guests_cleanup
 
+CreateTicketsJob.perform_later("CreateTickets")
+CreateTicketsJob.set(wait: 1.week).perform_later(record)
+
+sudo yum install -y redis
+sudo service redis start
+vi Gemfile
++ gem 'sidekiq'
++ gem 'sinatra', require: false
++ gem 'redis-namespace'
+bundle install
+
+rails g sidekiq:worker 
 ```
 
-```app/jobs/
-```
+```app/jobs/create_tickets_job.rb
+class CreateTicketsJob < ActiveJob::Base
+  queue_as :default
+  
+  def perform(*args)
+    p " #=> result "
+  end
+end
 
 ```
+
+```config/initializers/sidekiq.rb
+Sidekiq.configure_server do |config|
+  case Rails.env
+    when 'production' then
+      config.redis = { url: 'redis://prg.redis-example.com:6379', namespace: 'sidekiq' }
+    when 'staging' then
+      config.redis = { url: 'redis://stg.redis-example.com:6379', namespace: 'sidekiq' }
+    else 
+      config.redis = { url: 'redis://127.0.0.1:6379', namespace: 'sidekiq' }
+  end
+end
+
+Sidekiq.configure_client do |config|
+  case Rails.env
+    when 'production' then
+      config.redis = { url: 'redis://prd.redis-example.com:6379', namespace: 'sidekiq' }
+    when 'staging' then
+      config.redis = { url: 'redis://stg.redis-exmple.com:6379', namespace: 'sidekiq' }
+    else 
+      config.redis = { url: 'redis://127.0.0.1:6379', namespace: 'sidekiq' }
+    end
+  end
+end
 ```
 
 ```
