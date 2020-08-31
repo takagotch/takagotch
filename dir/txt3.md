@@ -122,10 +122,12 @@ mount Sidekiq::Web => '/sidekiq'
 ```
 ```
 
-```
-```
+```.sh
+./bin/rails g job guests_cleanup
 
 ```
+
+```app/jobs/
 ```
 
 ```
