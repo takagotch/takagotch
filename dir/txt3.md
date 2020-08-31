@@ -300,19 +300,70 @@ mount Resque::Server, :at => "/resque"
 ```
 
 ###### resque .rb
+
+```.sh
+vi Gemfile
++ gem 'resque'
+
+rake -T
+rake resque:failures:sort
+rake rsque:work
+rake resque:workers
+
+sudo apt-get install redis-server
+redis-server
+
 ```
+
+```lib/tasks/resque.rake
+require 'resque/tasks'
+task "resque:setup" => :environment
 ```
 
 ```
 ```
 
-```
-```
+```archive.rb
+class Archive
+  @queue = :file_serve
+  
+  def self.perform(repo_id, branch = 'master')
+    repo = Repository.find(repo_id)
+    repo.create_archive(branch)
+  end
+end
+
+class Repository
+  def async_create_archive(branch)
+    Resque.enqueue(Archive, self.id, branch)
+  end
+end
+
+klass, args = Resque.reserve(:file_serve)
+klass.perform(*args) if klass.respond_to? :perform
+
+Archive.perform(44, 'masterbrew')
+
 
 ```
-```
 
-```
+```config/initializers/resque.rb
+class NullDataStore
+  def stat(stat)
+    0
+  end
+  
+  def increment_stat(stat, by)
+  end
+  
+  def decrement_stat(stat, by)
+  end
+  
+  def clear_stat(stat)
+  end
+end
+
+Resque.stat_data_store = NullDataStore.new
 ```
 
 ```
