@@ -317,6 +317,8 @@ redis-server
 ./bin/rails c
 QUEUE=resque_sample bundle exec rake resque:work
 
+curl http://localhost:3000/resque
+
 
 ```
 
@@ -419,7 +421,13 @@ QUEUE=resque_job bundle exec rake resque:work
 task "resque:setup" => :environment
 ```
 
-```
+```config/routes.rb
+require 'resque/server'
+Rails.application.routes.draw do
+  mount Resque::Server.new, :at => "/resque"
+end
+
+
 ```
 
 ```
