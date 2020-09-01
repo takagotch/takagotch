@@ -129,13 +129,42 @@ end
 
 ```
 
-```
+###### devise_token_auth
+
+```sh
+rails routes
+
+curl http://localhost:3000/users/sign_out
+curl -X DELETE -H 'client:xxxxxxx' -H 'uid-xxxx' -H 'access-token:xxx' http://localhost:3000/users/sign_out | jq .
+curl -X DELETE -h 'client:xxxx' -H 'uid:xxxx' -H 'access-token:xxxx' http://localhost:3000/users/sign_out | jq .
 ```
 
-```
-```
+```config/routes.rb
+Rails.application.routes.draw do
+  mount_devise_token_auth_for 'User', at: 'auth', controllers: {
+    omniauth_callbacks: "users/omniauth_callbacks"
+  }
+  as :user do
+    delete '/users/sign_out', to: 'users/session#destroy', as: :destroy_user_session
+  end
+  
+  mount ApplicationAPI, at: "/"
+end
 
 ```
+
+```app/controllers/users/sessions_controller.rb
+module Users
+  class SessionController < DeviseTokenAuth::ApplicationController
+    def render_destory_error
+      render json: {
+        message: I18n.t("devise_token_auth.sessions.user_not_found")
+      }, status: 404
+    end
+  end
+end
+
+
 ```
 
 ```
