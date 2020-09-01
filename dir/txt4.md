@@ -281,19 +281,99 @@ h1
 ```
 ```
 
-```
-```
-
-```
+```Gemfile
+gem 'ransack'
 ```
 
-```
-```
-
-```
+```sh
+bundle install
 ```
 
+```form.html.slim
+.detail_search
+  = search_form_for(@q,url: searches_detail_search_path) do |f|
+    .detail_search_sort
+      = f.select( :sorts, { 'SORTS': 'id desc', 'LOW PRICE': 'price asc', 'HIGH PRICE': 'price desc', 'OLDED': 'updated_at asc', 'NEWED': 'updated_at desc' } , { onchange: 'this.form.submit()'} )
+    .detail_search_title
+      .detail_search__title
+        %h3 DETAILSEARCH
+      .detail_search__group
+        .detail_search__group--label
+          = fa_icon "search"
+          %p ADDED KEYWORD
+        = f.search_field :name_cont, placeholder: "EX) DISCOUNT"
+      .detail_search__group
+        .detail_search__group--label
+          = fa_icon "search"
+          %p PRICE
+        .detail_search__group--forms
+          = f.search_field :price_gteq, placeholder: "\ Min"
+          %p ~
+          = f.search_field :price_lteq, placeholder: "\ Max"
+        .detail_search__group
+          .detail_search__group--label
+            = fa_icon "search"
+            %p ITEMCONDITION
+          .detail_search__group--checkbox
+            %label
+              %input{type: "checkbox"}
+              = 'ALL'
+          .detail_search__group--checkbox
+            %label
+              = f.check_box :state_in, '1', nil
+              = 'NEW, NEWED'
+          .detail_search__group--checkbox
+            %label
+              = f.check_box :state_in, '2', nil
+              = 'NEARBY NEW'
+          .detail_search__btns
+            .detail_search__btn--grey
+              = link_to "CLEAR", "/searches", type: "button"
+            = f.submit "COMPLETE"
 ```
+
+```searches_controller.rb
+class SearchesController < ApplicationController
+  before_action :set_ransack
+  
+  def detail_search
+    @search_product = Product.ransack(params[:q])
+    @products = @search_product.result.page(params[:page])
+  end
+
+private 
+
+  def set_ransack
+    @q = Product.ransack(params[:q])
+  end
+  
+end
+```
+
+```searches/detail_search.html.haml
+= render 'shared/header'
+= render 'shared/sell-btn'
+.search
+  .search-container
+    .search-left
+      = render 'searches/form-bar'
+    .search-right
+      % section.items-box-container
+        -if @search.present?
+          %h2.search-result-head
+            =@search
+            %span.search-result-head-text
+              SEARCHRESULT
+          .search-result-number
+            ="1-#{@products.count}COUNTSHOWED"
+        -else
+          %h2.search-result-nil
+            SEARCHRESULT
+          .search-result-number
+            ="1-#{@products.count}COUNTSHOWED"
+        .items-box-content
+          = render @products
+= render 'shared/footer'         
 ```
 
 ```
