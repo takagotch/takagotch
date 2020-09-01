@@ -386,12 +386,41 @@ end
 ```
 
 ```
-```
 
 ```
-```
+###### searchcop
+```.rb
+User.search('tky 07011112222')
+User.search('email: gmail AND (created_at:2020 OR created_at:2020)')
+
+
 
 ```
+
+```user.rb
+class User < ApplicationRecord
+  include SearchCop
+  has_many :posts
+  
+  search_scope :search do
+    attributes :email, :first_name, :last_name, :age, :created_at
+    attributes posts: ['posts.title', 'posts.message']
+    # attributes message: 'posts.message'
+    # options :message, type: :fulltext
+  end
+end
+
+User.search('tky')
+User.search('last_name:Yoshioka')
+User.search('created_at:2020')
+User.search('age > 20')
+User.search('(last_name:Yoshioka OR age > 20) AND created_at:2020')
+
+
+class Post < ApplicationRecord
+  belongs_to :user
+end
+
 ```
 
 ```
