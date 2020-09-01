@@ -192,25 +192,87 @@ end
   = f.submit    
 ```
 
-```
-```
-
-```
-```
-
-```
+```students_controller.rb
+def search_params
+  params.require(:q).permit(:department_id_eq)
+end
 ```
 
-```
+```_search.html.slim
+= search_form_for(@q, url:search_path) do |f|
+  p
+    = f.label :department_id_eq, 'DEPARTMENT'
+      = f.radio_button 'department_id_eq', '', {:checked => true}
+      | NO CATEGORY
+    = f.collection_radio_buttons :department_id_eq, @departments, :id, :name
+  = f.submit
 ```
 
-```
+```search.html.erb
+= search_form_for(@q, url:search_path) do |f|
+  p
+    = f.label :sex_eq, 'SEX'
+    = f.radio_button :sex_eq, '', {:checked => true}
+    | NO CATEGORY
+    = f.radio_button :sex_eq, 'MALE'
+    | MALE
+    = f.radio_button :sex_eq, 'FEMALE'
+    | FEMALE
+= f.submit
 ```
 
-```
+```search.html.slim
+= search_form_for(@q, url:search_path) do |f|
+  p
+    = f.label :age_gteq, 'AGE'
+    = f.radio_button 'age_gteq', '',{:checked => true}
+    | NO CATEGORY
+    = f.radio_button 'age_gteq', '15'
+    | AGE 15 more
+    = f.radio_button 'age_gteq', '20'
+    | AGE 20 more
+  = f.submit
 ```
 
+```students_controller.rb
+def index
+  @q = Student.ransack(params[:q])
+  @subjects = Subjects.all
+  @studets = @q.result.includes(:department, :subjects)
+end
 ```
+
+```search.html.slim
+= search_form_for(@q, url:search_path) do |f|
+  p
+    = f.label :subjects_id_in, 'SUBJECTS'
+    = f.collection_check_boxes :subjects_id_in, @subjects, :id, :name
+  = f.submit
+```
+
+```_search.html.slim
+h1
+  | SEARCH QUERY
+- unless params[:q][:name_cont].empty?
+  | NAME:
+  = params[:q][:name_cont]
+  br
+- unless params[:q][:department_id_eq].empty?
+  | DEPARTMENT:
+  = Department.find(params[:q][:department_id_eq]).name
+  br
+- unless params[:q][:sex_eq].empty?
+  | SEX:
+  = params[:q][:sex_eq]
+  br
+- unless params[:q][:sex_eq].empty?
+  | AGE:
+  = params[:q][:age_gteq]
+  | AGE MORE
+  br
+- unless params[:q][:subjects_id_in].reject(&:blank?).empty?
+  | SUBJECTS:
+  = params[:q][:subject_id_in].reject(&:blank?).map{|subject_id| Subject.find(subject_id).name}.join(', ')
 ```
 
 ```
