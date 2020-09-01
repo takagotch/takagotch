@@ -82,7 +82,15 @@ SalesLastMonth.import ticket_sales
 ```
 ```
 
-```
+###### paranoia
+
+```sh
+vi Gemfile
++ gem 'paranoia'
+./bin/rails g model user name age:integer deleted_at:datetime
+./bin/rails db:migrate
+
+
 ```
 
 ```
