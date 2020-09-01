@@ -183,6 +183,7 @@ vi Gemfile
 rails g devise_token_auth:install User auth
 rails db:migrate
 
+rails routes
 ```
 
 ```db/migrate/[timestamps]_devise_token_auth_create_users.rb
@@ -190,37 +191,124 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[5.1]
   def change
     create_table(:user) do |t|
     
-    t.string :provider, :null => false, :default => "email"
-    t.string :uid, :null => false, :default => ""
+      t.string :provider, :null => false, :default => "email"
+      t.string :uid, :null => false, :default => ""
     
-    t.string :encrypted_password, :null => false, :default => ""
+      t.string :encrypted_password, :null => false, :default => ""
     
-  # t.string :reset_password_token
-  # t.datetime :reset_password_send_at
+    # t.string :reset_password_token
+    # t.datetime :reset_password_send_at
   
-    t.datetime :remember_created_at
+      t.datetime :remember_created_at
     
-    t.integer :sign_in_count, :default => 0, :null => false
-    t.datetime :current_sign_in_at
-    t.datetiem :last_sign_in_at
-    t.string :curent_sign_in_ip
-    t.string :last_sign_in_ip
+      t.integer :sign_in_count, :default => 0, :null => false
+      t.datetime :current_sign_in_at
+      t.datetiem :last_sign_in_at
+      t.string :curent_sign_in_ip
+      t.string :last_sign_in_ip
+    
+    # t.string :confirmation_token
+    # t.datetime :confirmed_at
+    # t.datetime :confirmation_sent_at
+    # t.string :unconfirmed_email 
+  
+    # t.integer :failed_attempts, :default => 0, :null => false
+    # t.string  :unlock_token
+    # t.datetime :locked_at
+  
+      t.string :name
+      t.string :nickname
+      t.string :image
+      t.string :email
+  
+      t.json :token
+  
+      t.timestamps
+    end
+  
+    add_index :users, :email, unique: true
+    add_index :users, [:uid, :provider], unique: true
+  # add_index :users, :reset_password_token, unique: true
+  # add_index :users, :confirmtion_token,    unique: true
+  # add_index :users, :unlock_token,         unique: true
   end
-  
-  
+end
 
+```
+
+```app/models/user.rb
+class User < ActiveRecord::Base
+  devise :rememberable, :omniauthable
+  include DeviseTokenAuth::Concerns::Users
 end
 
 
 ```
 
-```
-```
+```app/controllers/users/omniauth_callbacks_controller.rb
+module Users
+  class OmniauthCallbacksController < DeviseTokenAuth::OmniauthCallbacksContller
+    include Devise::Controllers::Rememberable
+    
+    def omniauth_success
+      get_resource_from_auth_hash
+      create_token_info
+      set_token_on_resource
+      create_auth_params
+      
+    # if resource_class.devise_modules.includes?(:confirmable)
+    #   @resource.skip_confirmation!
+    # end
+    
+      sign_in(:user, @resource, store:false, bypass: false)
+      
+      if @resource.save!
+        update_auth_header
+        yield @resource if block_given?
+        render json: @resource, status: :ok
+      else
+        render json: { message: "failed to login" }, status: 500
+      end
+     
+    # @resource.save!
+    # update_auth_header
+    # yield @resource if block_given?
+    # render_data_or_redirect('deliverCredentials', @auth_params.as_json, @resource.as_json)
+    
+    end
+    
+    protected
+    def get_resource_from_auth_hash
+      @resource = resource_class.where({
+        uid:      auth_hash['uid'],
+        provider: auth_hash['provider']
+      }).first_or_initialize
+      
+      if @resource.new_record?
+        @oauth_registration = true
+      # set_random_password
+      end
+      
+      assign_provider_attrs(@resource, auth_hash)
+      
+      extra_params = whitelisted_params
+      @resource.assign_attributes(extra_params) if extra_params
+      
+      @resource
+      
+    end
+  
+  end
+  
+end
 
 ```
-```
 
-```
+```config/routes.rb
+Rails.application.routes.draw do
+  mount_devise_token_auth_for 'User', at: 'auth', controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
+end
+
 ```
 
 ```
