@@ -129,7 +129,7 @@ end
 
 ```
 
-###### devise_token_auth
+###### devise_token_auth logout
 
 ```sh
 rails routes
@@ -167,10 +167,51 @@ end
 
 ```
 
-```
-```
+###### devise_token_auth LOGIN
+
+```sh
+rails new User -d postgresql -B -T --api
+vi Gemfile
++ gem 'rack-cors'
++ gem 'devise'
++ gem 'devise_token_auth'
++ gem 'omniauth'
++ gem 'omniauth-oauth2'
++ gem 'omniauth-google-oauth2'
++ gem 'omniauth-twitter'
+
+rails g devise_token_auth:install User auth
+rails db:migrate
 
 ```
+
+```db/migrate/[timestamps]_devise_token_auth_create_users.rb
+class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[5.1]
+  def change
+    create_table(:user) do |t|
+    
+    t.string :provider, :null => false, :default => "email"
+    t.string :uid, :null => false, :default => ""
+    
+    t.string :encrypted_password, :null => false, :default => ""
+    
+  # t.string :reset_password_token
+  # t.datetime :reset_password_send_at
+  
+    t.datetime :remember_created_at
+    
+    t.integer :sign_in_count, :default => 0, :null => false
+    t.datetime :current_sign_in_at
+    t.datetiem :last_sign_in_at
+    t.string :curent_sign_in_ip
+    t.string :last_sign_in_ip
+  end
+  
+  
+
+end
+
+
 ```
 
 ```
