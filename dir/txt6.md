@@ -65,7 +65,18 @@ ja:
 ```
 ```
 
-```
+###### Active Record insert_all
+```.rb
+row_ticket_sales = Ticket.joins(:reviews, :sales).where(some_conditions).select(some_columns).group("tickets.id")
+
+ticket_sales = row_ticket_sales.map do |sales|
+  sales_last_month = SalesLastMonth.new
+  [:some, :columns, :name].each do |column|
+    sales_last_month.send("#{column.to_s}=", sales.send(column))
+  end
+  sales_last_month
+end
+SalesLastMonth.import ticket_sales
 ```
 
 ```
