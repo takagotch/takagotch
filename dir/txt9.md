@@ -326,10 +326,44 @@ end
 
 
 ```config/application.rb
-module 
-```
+module User
+  class Application < Rails::Application
+    config.load_defaults 5.1
+    config.api_only = true
+    
+    config.middleware.use Rack::MethodOverride
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookiesStore
+    config.middleware.use ActionDispatch::Flash
+    
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins '*'
+        resource '*',
+                  :headers => :any,
+                  :expose  => ['access-token', 'expiry', 'token-type', 'uid', 'client'],
+                  :methods => [:get, :post, :options, :delete, :put]
+      end
+    end
+  end
+  
+end
 
 ```
+
+```config/initializer/omniauth.rb
+require File.expand_path()
+Rails.application.config.middleware.use OmniAuth::Builder do
+  OAUTH_CONFIG = YAML.load_file("")[Rails.env].symbolize_keys!
+  provider :doorkeeper, OAUTH_CONFIG[][], OAUTH_CONFIG[]
+  
+  provider :google_oauth2, OAUTH_CONFIG[][], OAUTH_CONFIG[:google]['secret'], name: :google, scope: %w(email)
+  
+  provider :twitter, OAUTH_CONFIG[][], OAUTH_CONFIG[:twitter][]
+
+end
+
+
 ```
 
 ```
