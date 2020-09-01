@@ -93,13 +93,80 @@ vi Gemfile
 
 ```
 
-```
+```app/models/user.rb
+class User < ApplicationRecord
+  acts_as_paranoid column: :destroyed_at
+# acts_as_paranoid without_default_scope: true
+end
+
+User.where( 'age > ?', 20)
+user = User.find(1)
+user.destroy
+user.deleted_at
+User.where('age > ?', 20)
+user.really_destroy!
+
+User.where('age > ?', 20)
+user.destroy
+
+User.all
+User.with_deleted
+User.without_deleted
+
+User.where('age > ?', 20).with_deleted
+User.only_deleted
+
+user = User.only_deleted.first
+user.deleted?
+user.paranoia_destroyed?
+
+user.restore
+User.restore(2)
 ```
 
-```
+```sh
+rails g migration AddDeletedAtToUsers deleted_at:datetime:index
+rails db:migrate
+
+rails c
+user = User.find(1)
+user.destory
+user = User.find(1)
+user.really_destroy!
+User.only_deleted
+User.only_deleted.first
+User.only_deleted.find(4)
+User.with_deleted
+User.without_deleted
+user.restore
+User.restore(2)
 ```
 
-```
+```app/models/user.rb
+class AddDeletedAtToUsers < ActiveRecord::Migration
+  acts_as_paranoid
+  
+  def change
+    add_column :users, :deleted_at, :datetime
+    add_index :users, :deleted_at
+  end
+end
+
+class Client < ActiveRecord::Base
+  acts_as_paranoid column: :destroyed_at
+# acts_as_paranoid without_default_scope: true
+end
+
+class User < ActiveRecord::Base
+  acts_as_paranoid
+  
+  after_destroy :update_document_in_search_engine
+  after_restore :update_document_in_search_engine
+  after_real_destroy :remove_document_from_search_engine
+
+end
+
+
 ```
 
 ```
