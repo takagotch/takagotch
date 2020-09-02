@@ -354,20 +354,114 @@ end
 ```config/initializer/omniauth.rb
 require File.expand_path()
 Rails.application.config.middleware.use OmniAuth::Builder do
-  OAUTH_CONFIG = YAML.load_file("")[Rails.env].symbolize_keys!
-  provider :doorkeeper, OAUTH_CONFIG[][], OAUTH_CONFIG[]
+  OAUTH_CONFIG = YAML.load_file("#{Rails.root}/root/config/omniauth.yml")[Rails.env].symbolize_keys!
+  provider :doorkeeper, OAUTH_CONFIG[:doorkeeper]['key'], OAUTH_CONFIG[:doorkeeper]['secret']
   
-  provider :google_oauth2, OAUTH_CONFIG[][], OAUTH_CONFIG[:google]['secret'], name: :google, scope: %w(email)
+  provider :google_oauth2, OAUTH_CONFIG[:google]['key'], OAUTH_CONFIG[:google]['secret'], name: :google, scope: %w(email)
   
-  provider :twitter, OAUTH_CONFIG[][], OAUTH_CONFIG[:twitter][]
+  provider :twitter, OAUTH_CONFIG[:twitter]['key'], OAUTH_CONFIG[:twitter]['secret']
 
 end
-
-
 ```
 
+```config/omniauth.yml
+production: &production
+  doorkeeper:
+    key: xxxxxx
+    secret: xxxxxx
+  google:
+    key: xxxxxx
+    secret: xxxxxxx
+  twitter:
+    key: xxxxxxx
+    secret: xxxxxxxxx
+
+development: &developemnt
+  <<: *production
+
+test:
+  <<: *development
+```
+
+```.rb
+site_url = http://localhost:3000
+callback_url = http://localhost:3000/omniauth/google/callback
+
+site_url = http://127.0.0.1:3000
+callback_url = http://127.0.0.1:3000/omniauth/twitter/callback
+
+site_url = http://localhost:3000
+callback_url = http://localhost:3000/omniauth/doorkeeper/callback
+```
+
+```lib/omniauth/strategies/doorkeeper.rb
+require 'omniauth-oauth2'
+module OmniAuth
+  module Strategies
+    class Doorkeeper < OmniAuth::Strategies::OAuth2
+      RAW_INFO_URL = 'api/v1/me'
+      option :name, :doorkeeper
+      
+      option :client_options, {
+        site: 'doorkeeper URL'
+      }
+      
+      uid { raw_info['uid'] }
+      
+      info do
+      {
+        email: raw_info['email'],
+        name: raw_info['name']
+      }
+      end
+      
+      extra do
+        { raw_info: raw_info }
+      end
+      
+      def raw_info
+        @raw_info ||= JSON.parse(access_token.get(RAW_INFO_URL).response.body)
+      end
+      
+      def callback_url
+      
+      end
+    end
+  end
+end
+```
+
+```sh
+rails s
+curl http://localhost:3000/auth/google
+curl http://localhost:3000/auth/twitter
+curl http://localhost:3000/auth/doorkeeper
+
+```
+
+```config/initializers/omniauth.rb
+OmniAuth.config.on_failure = Proc.new { |env|
+  OmniAuth::FailureEndpoint.new(env).redirect_to_failure
+}
+```
+
+```config/initializers/devise.rb
+Rails.application.config.to_prepare do
+  Devise::OmniauthCallbacksController.classs_eval do
+    def failure
+      render json: { message: "Login failed." }, status: 401
+    end
+  end
+end
+```
+
 ```
 ```
+
+
+####### doorkeeper
+
+
 
 ```
 ```
@@ -378,23 +472,6 @@ end
 ```
 ```
 
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
 
 ```
 ```
