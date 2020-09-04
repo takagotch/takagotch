@@ -48,10 +48,14 @@ end
 ```
 ```
 
-```
+```config/initializers/session_store.rb
+RailsGameServer::Application.config.session_store :redis_store, :servers => { :host => "localhost", :port => 6379, :namespace => "session" }
 ```
 
-```
+```sh
+redis-cli
+keys sessions*
+get sessions:xxxxx
 ```
 
 ```
