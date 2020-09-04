@@ -1,9 +1,19 @@
-######
+###### redis-store
 ---
 
 
 
-```
+```sh
+sudo yum install -y redis
+redis-server
+redis-cli
+
+SET mykey "KEY"
+GET mykey
+quit
+
+
+
 ```
 
 ```
