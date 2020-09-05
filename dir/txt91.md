@@ -33,13 +33,46 @@
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
     <%= form_for(:session, url: login_path) do |f| %>
+      <%= f.label :email %>
+      <%= f.email_field :email, class: 'form-control' %>
+      
+      <%= f.label :password %>
+      <%= link_to "(forgot password)", new_password_reset_path %>
+      <%= f.password_field :password, class: 'form-control' %>
+      
+      <%= f.label :remember_me, class: "checkbox inline" do %>
+        <%= f.check_box :remember_me %>
+        <span>Remember me on this computer</span>
+      <% end %>
+      <input type="hidden" name="recaptcha_response" id="recaptcharResponse">
+      
+      <%= f.submit "Log in", class: "btn btn-primary" %>
+    <% end %>
     
-    <p>New user? <%= link_to "Sign up now!"%></p>
+    <p>New user? <%= link_to "Sign up now!", signup_path %></p>
   </div>
 </div>
 ```
 
-```
+```SessionsController/sessions_controller.rb
+require 'uri'
+require 'net/http'
+
+class SessionController < ApplicationController
+
+  RECAPTCHA_SECRET_KEY = 'reCAPTCHA CONSOLE SECRETKEY INPUT'
+  RECAPTCHA_SITEVERIFY_URL = ''
+  
+  def create
+    siteverify_uri = URI.parse()
+    response = Net::HTTP.get_response(siteverify_uri)
+    json_response = JSON.parse(response.body)
+    
+    
+    
+    
+  end
+end
 ```
 
 ```
