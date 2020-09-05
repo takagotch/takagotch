@@ -142,10 +142,16 @@ recaptcha:
 ```
 ```
 
-```
+###### devise, single user
+
+```config/routes.rb
+devise_for :users, controllers: { registrations: "registrations" }
 ```
 
-```
+```app/controllers/registrations_controller.rb
+class RegistrationsController < Devise::RegistrationsController
+end
+
 ```
 
 ```
