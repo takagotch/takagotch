@@ -150,11 +150,29 @@ devise_for :users, controllers: { registrations: "registrations" }
 
 ```app/controllers/registrations_controller.rb
 class RegistrationsController < Devise::RegistrationsController
+  
+  before_action :one_user_registered?, only: [:new, :create]
+  
+  def one_user_registered?
+    if User.count == 1
+      if user_signed_in?
+        redirect_to root_path
+      else
+        redirect_to new_user_session_path
+      end
+    end
+  end
+  
 end
 
 ```
 
-```
+```app/views/registration.html.erb
+<% if user_signed_in? %>
+  <%= link_to('logout', destroy_user_session_path, method: :delete) %>
+<% else %>
+  <%= link_to('login', new_user_session_path) %>
+<% end %>
 ```
 
 ```
