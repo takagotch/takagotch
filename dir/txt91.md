@@ -1,4 +1,4 @@
-###### reCAPTCHA
+###### reCAPTCHA Google
 ---
 
 
@@ -93,19 +93,50 @@ end
 ```
 ```
 
-```
-```
+```sh
+vi Gemfile
++ gem 'recaptcha', require: "recaptcha/rails"
+bundle install
+
+
 
 ```
+
+```config/initializers/recaptcha.rb
+Recaptcha.configure do |config|
+  config.site_key = ENV['RECAPTCHA_PUBLIC_KEY']
+  config.secret_key = ENV['RECAPTCHA_PRIVATE_KEY']
+end
 ```
 
-```
-```
-
-```
+```app/views/devise/registrations/new.html.erb
+<%= recaptcha_tags %>
 ```
 
+```app/controllers/reistrations_controller.rb
+class RegistrationsController < Devise::RegistrationsController
+  prepend_before_action :check_captcha, only: [:create]
+  prepend_before_action :customize_sign_up_params, only: [:create]
+  
+  private
+  def customize_sign_up_params
+    devise_parameter_sanitizer.permit :sign_up, keys: [:username, :email, :password, :password_confirmation, :remember_me]
+  end
+  
+  def check_captcha
+    self.resource = resource_class.new sign_up_params
+    resource.validate
+    unless verify_recaptcha(model: resource)
+      respond_with_navigational(resource) { render :new }
+    end
+  end
+end
 ```
+
+```config/locales/ja.yml
+recaptcha:
+  errors:
+    verification_failed: 'reCAPTCHA ERR'
 ```
 
 ```
