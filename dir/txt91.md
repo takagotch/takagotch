@@ -181,22 +181,85 @@ recaptcha:
 ```
 ```
 
-```
-```
+
+###### reCAPTCHA, Devise
+
+```.sh
+vi Gemfile
++ gem 'devise'
+bundle install
+
+rails g devise:install
+rails g devise user
+rake db:migrate
+rails g devise:views
+rails g devise:controllers users
+
 
 ```
-```
+
+```config/routes.rb
+devise_for :users, :controllers => {
+  :registrations => 'users/registrations',
+  :sesssions => 'users/sessions'
+}
+
+devise_scope :user do
+  get "sign_in", :to => "users/sessions#new"
+  get "sign_out", :to => "users/sessions#destroy"
+end
 
 ```
-```
+
+```application.html.erb
+
 
 ```
+
+```application_controller.rb
+
+# => {""=>true, ""=>"", ""=>"",...}
 ```
 
-```
-```
+```app/controllers/users/session_controller.rb
+class Users::SessionsController < Devise::SessionController
+  
+  # sign_in
+  def create
+    unless verify_recaptcha?(params[:recaptcha_token], 'login')
+      flash.now[] = I18n.t('recaptcha.errors.verification_failed') # ERR i18n
+      return render action: :new
+    end
+    self.resource = warden.authenticate!(auth_options)
+    sign_in(resource_name, resource)
+    yield resource if block_given?
+    respond_with resource, location: after_sign_in_path_for(resource)
+  end
+  
+  protected
+  
+  def sign_in_params
+    devise_parameter_sanitizer.sanitize(:sign_in)
+  end
+  
+  def auth_options
+    { scope: resource_name, recall: "#{controller_path}#new" }
+  end
+  
+  def translation_scope
+    'devise.sessions'
+  end
+  
+  # sign_out
+  
+end
+
 
 ```
+
+```app/views/users/sessions/new.html.erb
+
+
 ```
 
 ```
