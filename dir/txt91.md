@@ -68,10 +68,21 @@ class SessionController < ApplicationController
     response = Net::HTTP.get_response(siteverify_uri)
     json_response = JSON.parse(response.body)
     
-    
-    
-    
+    if json_response['success'] && json_response['score'] > 0.5
+      user = User.find_by(email: params[:session][:email])
+      if
+      
+      
+      else
+      
+      
+      end
+    else
+      flash.now[:danger] = 'Invalid email/password combination'
+      render 'new'
+    end
   end
+  
 end
 ```
 
