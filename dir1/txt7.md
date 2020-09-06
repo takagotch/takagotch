@@ -140,6 +140,9 @@ end
 remember_me(@user)
 ```
 
+```
+```
+
 ```spec/support/omniauth.rb
 OmniAuth.config.test_mode = true
 
@@ -152,20 +155,66 @@ OmniAuth.config.add_mock(:twitter, {:uid => 'xxxx'})
 
 OmniAuth.config.mock_auth[:twitter] = :invalid_credentials
 
+OmniAuth.config.on_failure = Proc.new { |env|
+  OmniAuth::FailureEndpoint.new(env).redirect_to_failure
+}
+
+OmniAuth.config.mock_auth[:twitter] = nil
+
+before do
+  request.env["devise.mapping"] = Devise.mappings[:user]
+  request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:twitter]
+end
+
+before do
+  Rails.application.env_config["dvise.mapping"] = Devise.mappings[:user]
+  Rails.application.env_config["omniauth.auth"] = OmniAuth.config.mock_auth[:twitter]
+end
 
 
 ```
 
-```
-```
+```devise.rb
+Devise.setup do |config|
+  config.omniauth :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
+end
 
 ```
-```
+
+```omniauth.rb
+Rails.application.config.middleware.use OmniAuth::Builder do
+  provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
+end
 
 ```
+
+```authentications_controlller.rb
+get "/auth/:action/callback", :to => "authentications",
+                              :constraints => { :action => /twitter|google/ }
+                              
+                              
+get "/auth/:action/callback", :controller => "authentications",
+                              :constraints => { :action => /twitter|google/ }
+
+get "/auth/:provider/callback" => "authentications#create"
+
+devise_scope :user do
+  get "/auth/:provider/callback" => "authentications#create"
+end
+
+Rails.application.config.middleware.use OmniAuth::Builder do
+  on_failure { |env| AuthenticationsController.action(:failure).call(env) }
+end
+
+OmniAuth.config.on_failure = Proc.new { |env| AuthenticationController.action(:failure).call(env) }
 ```
 
-```
+```sh
+vi Gemfile
++ gem 'omniauth-facebook'
+bundle install
+
+
 ```
 
 ```
