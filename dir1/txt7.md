@@ -277,13 +277,40 @@ end
 
 ```
 
-```
-```
+```activerecord/lib/active_record/querying.rb
+module ActiveRecord
+  module Querying
+    delegate :first_or_create, :first_or_create!, :first_or_initialize, to: :all
+  end
+end
 
 ```
-```
+
+```user.rb
+class User < ApplicationRecord
+  def self.new_with_session(params, session)
+    super.tap do |user|
+      if data = session["devise.facebook_data"] && session["devise.facebook_data"]["extra"]["raw_info"]
+        user.email = data["email"] if user.email.blank?
+      end
+    end
+  end
+  
+end
 
 ```
+
+```config/routes.rb
+devise_scope :user do
+  delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
+end
+
+devise_for :user, :controllers => { :omniauth_callback => "users/omniauth_callbacks" }
+
+devise_scope :user do
+  get 'sign_in',
+end
+
 ```
 
 ```
