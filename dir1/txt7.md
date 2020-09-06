@@ -217,19 +217,51 @@ bundle install
 
 ```
 
-```
-```
+```config/initializers/devise.rb
+config.omniauth :facebook,
+                "APP_ID",
+                "APP_SECRET"
+
+config.omniauth :facebook,
+                "APP_ID",
+                "APP_SECRET",
+                callback_url: "CALLBACK_URL"
+
 
 ```
+
+```app/models/user.rb
+devise :omniauthable, :omniauth_providers => [:facebook]
 ```
 
-```
-```
-
-```
+```app/views/home.html.erb
+<%= link_to "Sign in with Facebook", user_facebook_omniauth_authorize_path %>
 ```
 
+```.rb
+devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
 ```
+
+```app/controllers/users/omniauth_callbacks_controller.rb
+class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+
+  def facebook
+    @user = User.from_omniauth(request.env["omniauth.auth"])
+    
+    if @user.persisted?
+      sign_in_and_redirect @user, :event => :authentication
+      set_flash_message(:notice, :success, :kind => "Facebook") if is_nabigational_format?
+    else
+      session["devise.facebook_data"] = request.env["omniauth.auth"]
+      redirect_to new_user_registration_url
+    end
+  end
+  
+  def failure
+    redirect_to root_path
+  end
+end
+
 ```
 
 ```
