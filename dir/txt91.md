@@ -183,7 +183,35 @@ end
 ```app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
 
-
+  protect_from_forgery
+  
+  def current_or_guest_user
+  end
+  
+  def guest_user(with_retry = true)
+    @cached_user ||= User.find(session[:guest_user_id] ||= create_guest_user.id)
+    
+  rescue ActiveRecord::RecordNotFound
+    session[:guest_user_id] = nil
+    guest_user if with_retry
+  end
+  
+  private
+  
+  def logging_in
+    # guest_comments = guest_user.comments.all
+    # guest_comments.each do |comment|
+    #   comment.user_id = current_user.id
+    #   comment.save!
+    # end
+  end
+  
+  def create_guest_user
+    u = User.new(:name => "guest", :email => "guest_#{Time.now.to_i}#{rand(100)}@gmail.com")
+    u.save!(:validate => false)
+    session[:guest_user_id] = u.id
+    u
+  end
 
 
 
