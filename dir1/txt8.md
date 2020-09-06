@@ -74,13 +74,23 @@ vi app/views/index.html.erb
       <tr>
         <td><%= link_to 'Show', message %></td>
         <td><%= link_to 'Edit', edit_message_path(message) %></td>
-        <td><%= %></td>
-        <td><%= %></td>
+        <td><%= link_to 'Destroy', message, method: :delete, data: {confirm: 'Are you sure?' } %></td>
+        <td><%= message.body %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
+<br>
+<%= link_to 'New Message', new_message_path %>
+
+</div>
+<br/>
+<form>
+  <label>
+    websockets SEND: <input type="text" data-behavior="speak_chat_messages">
+  </label>
+</form>
 ```
 
 
