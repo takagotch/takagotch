@@ -308,21 +308,67 @@ end
 devise_for :user, :controllers => { :omniauth_callback => "users/omniauth_callbacks" }
 
 devise_scope :user do
-  get 'sign_in',
+  get 'sign_in', :to => 'devise/session#new', :as => :new_user_session
+  get 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
 end
 
 ```
 
+```app/controllers/application_controller.rb
+class ApplicationController < ActionController::Base
+  def new_session_path(scope)
+    new_user_session_path
+  end
+end
+
 ```
+
+```.rb
+class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  def facebook
+    if request.env["omniauth.auth"].info.email.blank?
+      redirect_to "/users/auth/facebook?auth_type=rerequest&scope=email"
+    end
+  end
+end
+
+```
+
+```config/routes.rb
+config.omniauth :facebook,
+                "APP_ID",
+                "APP_SECRET",
+                scope: 'email',
+                info_fields: 'email,name'
+
+config.omniauth :facebook,
+                "APP_ID",
+                "APP_SECRET",
+                :client_options => {:ssl => {:ca_path => '/etc/ssl/certs'}}
+                
+config.omniauth :facebook,
+                "APP_ID",
+                "APP_SECRET",
+                :client_options => {:ssl => {:ca_file => {:ssl => {:ca_file => '/usr/lib/ssl/certs/ca-certificates.crt'}}}}
+
+config.omniauth :facebook,
+                "APP_ID",
+                "APP_SECRET",
+                :client_options => {:ca_file => '/usr/lib/ssl/carts/ca-certificates.crt'}
+
+require "omniauth-facebook"
+config.omniauth :facebook,
+                "",
+                "",
+                :client_options => { :ssl => { :verify => }}
 ```
 
 ```
-```
+# heroku
+/usr/lib/ssl/certs/ca-certificates.crt
 
-```
-```
-
-```
+# engine yard cloud servers
+/etc/ssl/certs/ca-certificates.crt
 ```
 
 ```
