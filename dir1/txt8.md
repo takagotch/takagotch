@@ -94,14 +94,20 @@ vi app/views/index.html.erb
 ```
 
 
-```
+```javascripts/cable.js
+(function() {
+  this.App || (this.App = {});
+  
+  App.cable = ActionCable.createConsumer();
+  
+}).call(this);
 ```
 
-```
+```message.js
 ```
 
 
-```
+```chat_message_channel.rb
 ```
 
 ```
