@@ -127,13 +127,33 @@ end
 
 ```
 
-```
-```
+###### sign out, rememberable, omniauthable
+
+```.rb
+devise_scope :user do
+  get 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
+end
 
 ```
+
+```.rb
+remember_me(@user)
 ```
 
-```
+```spec/support/omniauth.rb
+OmniAuth.config.test_mode = true
+
+OmniAuth.config.mock_auth[:twitter] = OmniAuth::AuthHash.new({
+  :provider => 'twitter',
+  :uid => 'xxxx'
+})
+
+OmniAuth.config.add_mock(:twitter, {:uid => 'xxxx'})
+
+OmniAuth.config.mock_auth[:twitter] = :invalid_credentials
+
+
+
 ```
 
 ```
