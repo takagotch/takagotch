@@ -358,9 +358,14 @@ config.omniauth :facebook,
 
 require "omniauth-facebook"
 config.omniauth :facebook,
-                "",
-                "",
-                :client_options => { :ssl => { :verify => }}
+                "APP_ID",
+                "APP_SECRET",
+                :client_options => { :ssl => { :verify => !Rails.env.development? }}
+                
+config.omniauth :facebook,
+                "APP_ID",
+                "APP_SECRET",
+                :strategy_class => OmniAuth::Strategies::Facebook
 ```
 
 ```
