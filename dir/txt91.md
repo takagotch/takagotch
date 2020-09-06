@@ -206,37 +206,84 @@ class ApplicationController < ActionController::Base
     # end
   end
   
+# def create
+#   super
+#   current_or_guest_user
+# end
+#
+# skip_before_filter :verify_authenticity_token, :only => [:name_of_your_action]
+#
+# protect_from_forgery :except => :receive_guest
+  
   def create_guest_user
     u = User.new(:name => "guest", :email => "guest_#{Time.now.to_i}#{rand(100)}@gmail.com")
     u.save!(:validate => false)
     session[:guest_user_id] = u.id
     u
   end
-
-
-
-
-
-
-
-
-
 end
 ```
 
-```
-```
+```initializers/some_initializer.rb
+Warden::Strategies.add(:guest_user) do
+  def valid?
+    session[:guest_user_id].present?
+  end
+  
+  def authenticate!
+    manager.default_strategies(scope: :user).unshift :guest_user
+  end
+end
 
 ```
-```
+
+```initializers/devise.rb
+Devise.setup do |config|
+  config.warden do |manager|
+    manager.default_strategies(scope: :user).unshift :guest_user
+  end
+end
 
 ```
-```
+
+```tests/controller_macros.rb
+module ControllerMacros
+  
+  def login_guest(guest = false)
+    guest ||= FactoryGirl.create(:guest_user)
+    @request.session[:guest_user_id] = guest.id
+  end
+end
+
 
 ```
-```
+
+```tests/users.rb
+FactoryGirl.define do
+  factory :user do
+  #
+  end
+
+  factory :guest_user, class: 'User' do
+    sequence(:email) { Faker::Internet.email }
+    role             :guest
+    to_create        { |instance| instance.save(validate: false) }
+  end
+end
 
 ```
+
+```tests/page_controller_spec.rb
+describe PagesController, type: :controller do
+  context '#index' do
+    before do
+    end
+    
+    it { expect(response).to have_http_status(:success) }
+    it { expect(response).to render_template('pages/index') }
+  end
+end
+
 ```
 
 ```
@@ -325,6 +372,7 @@ end
 ```
 
 ```app/views/users/sessions/new.html.erb
+
 
 
 ```
