@@ -36,7 +36,17 @@ config.action_mailer.default_url_options = { protocol: 'https', :host => 'YOUR_H
 ```
 ```
 
-```
+###### HTTP Basic Authentication
+
+```initializers/user.rb
+
+def http_authenticate
+  authenticate_or_request_with_http_digest do |user_name, password|
+    user_name == "tky" && password == "xxx"
+  end
+  warden.custom_failure! if performed?
+end
+
 ```
 
 ```
