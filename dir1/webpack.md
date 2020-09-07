@@ -333,7 +333,61 @@ new Vue({
 ```
 
 
-```
+```.sh
+sudo apt install git curl
+
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+cp .bashrc ~/.bashrc.back
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> .bashrc
+echo 'eval "$(rbenv init -)"' >> .bashrc
+source .bashrc
+curl -fsSL http://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash
+
+mkdir .rbenv/plugins
+git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
+sudo ~/.rbenv/plugins/ruby-build/install.sh
+source .bashrc
+
+sudo apt install autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlibqg-dev libncurses5-dev libffi-dev libgdbm5 libgdbm-dev
+
+rbenv install 2.7.1
+rbenv global 2.7.1
+ruby -v
+
+sudo apt install sqlite3 libsqlite3-dev
+vi Gemfile
++ gem "rails"
+gem list rails
+
+sudo apt install -y nodejs npm
+sudo npm install n -g
+sudo n stable
+sudo apt purge -y nodejs npm
+exec $SHELL -l
+node -v
+
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources/list.d/yarn.list
+sudo apt-get update && sudo apt-get install yarn
+
+vi Gemfile
+- gem "webpacker"
+budnle install
+yarn remove @rails/webpacker
+yarn remove webpack-dev-server
+
+yarn init
+yarn add vue --save
+
+yarn add webpack webpack-cli -D
+yarn add @babel/core @bable/polyfill @babel/preset-env babel-loader -D
+yarn add css-loader file-loader mini-css-extract-plugin pug pug-plain-loader sass-loader vue-loader vue-style-loader vue-template-compiler webpack-manifest-plugin -D
+
+vi webpack.config.js
+
+yarn upgrade
+yarn add core-js -D
 ```
 
 ```
