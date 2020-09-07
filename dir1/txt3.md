@@ -55,8 +55,16 @@ end
 
 
 ```
+
+```lib/omniauth/callback.rb
+module OmniAuth
+  module Strategies
+  end
+  
+end
+
 ```
-```
+
 ```
 ```
 ```
