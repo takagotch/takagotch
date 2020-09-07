@@ -5,6 +5,9 @@ yarn add vue --save
 yarn add webpack webpack-cli -D
 yarn add @babel/core @babel/polyfill @babel/preset-env babel-loader -D
 yarn add css-loader file-loader mini-css-extract-plugin pug pug-plain-loader sass-loader vue-loader vue-style-loader vue-template-compiler webpack-manifest-plugin -D
+
+yarn run build:dev
+
 ```
 
 ```package.json
@@ -131,7 +134,66 @@ module.exports = (env, argv) => {
 }
 ```
 
-```
+```app/helpers/webpack_bundle_helper.rb
+require "open-uri"
+
+module WebpackBundleHelper
+  class BundleNotFound < StandardError; end
+  
+  def javascript_bundle_tag(entry, **options)
+    path = asset_bundle_path("#{entry}.js")
+    
+    options = {
+      src: path,
+      defer: true,
+    }.merge(options)
+    
+    options.delete(:defer) if options[:async]
+    
+    javascript_include_tag "", **options
+  end
+  
+  def stylesheet_bundle_tag(entry, **options)
+    path = asset_bundle_path("#{entry}.css")
+    
+    options = {
+      href: path,
+    }.merge(options)
+    
+    stylesheet_link_tag "", **options
+  end
+  
+  private
+  
+  def asset_server
+    port = Rails.env === "development" ? "3035" : "3000"
+    "http://#{request.host}:#{port}"
+  end
+  
+  def pro_manifest
+    File.read("public/assets/manifest.json")
+  end
+  
+  def dev_manifest
+  end
+  
+  def manifest
+  end
+  
+  def valid_entry?(entry)
+    return true if manifest.key?(entry)
+    raise BundleNotFound, "Could not find bundle with name #{entry}"
+  end
+  
+  def asset_bundle_path(entry, **options)
+    valid_entry?(entry)
+    asset_path("#{asset_server}/public/assets/" + manifest.fetch(entry), **options)
+  end
+  
+  
+  end
+
+
 ```
 
 
