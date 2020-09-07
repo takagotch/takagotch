@@ -34,9 +34,26 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 end
 
 ```
+
+```.sh
+rake middleware
+
 ```
-```
-```
+
+```lib/omniauth/strategy.rb
+
+def setup_phase
+  if options[:setup].respond_to?(:call)
+    log :info, 'Setup endpoint detected, running now.'
+    options[:setup].call(env)
+  elsif options.setup?
+    log :info, 'Calling through to underlying application for setup.'
+    setup_env = env.merge('PATH_INFO' => setup_path, 'REQUEST_METHOD' => 'GET')
+    call_app!(setup_env)
+  end
+end
+
+
 ```
 ```
 ```
