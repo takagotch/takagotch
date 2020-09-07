@@ -53,12 +53,34 @@ def setup_phase
   end
 end
 
+module OmniAuth
+  module Strategies
+    class Developer
+      include OmniAuth::Strategy
+      
+      options :fields, [:name, :email]
+      options :uid_field, :email
+    end
+  end
+end
+
+app = lambda{|env| [200, {}, ["Hello."]]}
+OmniAuth::Strategies::Developer.new(app).options.uid_field                             # => :email
+OmniAuth::Strategies::Developer.new(app, :uid_field => :name)options.uid_field # => :name
+
 
 ```
 
 ```lib/omniauth/callback.rb
 module OmniAuth
   module Strategies
+    class Developer
+      include OmniAuth::Strategy
+      
+      uid do
+        request.params[options.uid_field.to_s]
+      end
+    end
   end
   
 end
