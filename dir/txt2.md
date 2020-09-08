@@ -60,10 +60,27 @@ ruby metrics plugin
 ```
 
 ###### selenium
-```
-```
 
 ```
+gem install rspec
+gem install selenium-webdriver
+```
+
+```tests/selenium_test.rb
+#encoding: utf-8
+require "selenium-webdriver"
+require "rspec"
+include RSpec::Expectations
+
+describe "SeleniumTest" do
+  before(:each) do
+    @driver = Selenium::WebDriver.for :ie
+    @base_url = "http://xxx.xxx.xxx.xxx/"
+    @driver.manage.timeouts.implicit_wait = 30
+    @verifycation_errors = []
+  
+end
+
 ```
 
 ```
