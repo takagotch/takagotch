@@ -9,6 +9,11 @@ cd jenkins_test
 bundle install --path vendor/bundle
 rails g rspec:install
 
+rails g scaffold Article title:string
+rake db:migrate
+
+rake spec
+
 ```
 
 ```gemfile
@@ -21,10 +26,19 @@ end
 
 ```
 
-```
+```spec/spec_helper.rb
+require 'simplecov'
+require 'simplecov-rcov'
+SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+SimpleCov.start 'rails'
 ```
 
+###### Jenkins
+
 ```
+rake plugin
+ruby plugin
+ruby metrics plugin
 ```
 
 ```
