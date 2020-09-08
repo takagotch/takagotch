@@ -147,6 +147,68 @@ module.exports = environment
 
 ###### Rack::Tracker
 
+```config/initilizers/rack-tracker.rb
+config = MyApplication::Application.config
+config.middleware.use(Rack::Tracker) do
+  handler :google_analytics, { tracker: 'U-xxxx-Y' }
+end
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+
 ```
 
 ```
