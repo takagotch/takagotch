@@ -59,11 +59,13 @@ ruby metrics plugin
 ```
 ```
 
-###### selenium
+###### selenium, for browser, capybara
 
 ```
 gem install rspec
 gem install selenium-webdriver
+
+rspec selenium_test.rb
 ```
 
 ```tests/selenium_test.rb
