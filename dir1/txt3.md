@@ -152,8 +152,94 @@ client_options: { ssl: { verify: false } }
 
 ###### Rodauth
 
+
+```app/models/db.rb
+create_table(:account_password_hashes) do
+  foregin_key :id, Seque|[:${DATABASE_NAME}][:accounts], :primary_key=>true, :type=>:Bignum
+  String :password_hash, :null=>false
+end
+Roadauth.create_database_authentication_functions(self, :table_name=>"${DATABASE_NAME}_password.account_password_hashes")
+
+create_table(:account_previous_password_hashes) do
+  primary_key :id, :type=>:Bignum
+  foreign_key :account_id, Seque|[:${DATABASE_NAME}][:account] :type=>:Bignum
+  String :password_hash, :null=>false
+end
+Roadauth.create_database_previous_password_check_function(self, :table_name=>"${DATABASE_NAME}_password.account_previous_password_hashes")
+```
+
+Basic auth
+```posts_controller.rb
+class PostsController < ApplicationController
+  http_basic_authenticate_with name:"tky", password:"secret", except: :index
+  
+  def index
+    render plain: "text"
+  end
+  
+  def edit
+    render plain: "text"
+  end
+end
+
+```
+
+digest
+```posts_controller.rb
+require 'digest/md5'
+class PostsController < ApplicationController
+  REALM = "SuperSecret"
+  USER = {"tky" => "secret",
+          "dap" => Digest::MD5.hexdigest(["dap", REALM, "secret"].join(":"))}
+          
+  before_action :authenticate, except: [:index]
+  
+  def index
+    render plain: "text"
+  end
+  
+  def edit
+    render plain: "text"
+  end
+  
+  private
+  def authenticate
+    authenticate_or_request_with_http_digest(REALM) do |username|
+      USERS[username]
+    end
+  end
+  
+  
+end
+
+```
+
+token: devise, omniauth, rodauth...
+```
+vi Gemfile
++ gem 'devise'
+bundle exec rails generate devise:install
+bundle exec rails generate devise user
+bundle exec rails db:migrate
+curl http://localhost:3000/users/sign_up
+```
+
+```app/rack-attack/controllers/ip.rb
+trottle('req/ip', :limit => 300, :period => 5.minutes) do |req|
+  req.ip
+end
+
+```
+
 ```
 ```
+
+```
+```
+
+```
+```
+
 ###### warden
 ###### redis-store, Rack, Rack::Cache
 
