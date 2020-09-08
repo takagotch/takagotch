@@ -111,6 +111,93 @@ end
 
 ```
 
+```
+```
+
+```rails_helper.rb
+if ENV['COVERAGE']
+  require 'simplecov'
+  require 'simplecov-rcov'
+  SimpleCov.start 'rails' do
+    add_filter '/vendor'
+  end
+  SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+end
+```
+
+```
+
+```
+
+```spec/coverage_helper.rb
+
+```
+
+```spec/rails_helper.rb
+# frozen_string_literal: true
+
+class CoverageAsertion
+  class CoverageAssertionFailure < StandardError
+  end
+  
+  attr_reader :file_map
+  attr_reader :highline
+  
+  def initialize
+    require "highline"
+    
+    coverage_assertion = ENV['COVERAGE_ASSERTION']
+    @file_map = Hash[coverage_assertion.split(',').map { |pair| pair.split(':') }]
+    @file_map.transform_keys! { |key| Pathname.new(key) }
+    @file_map.transform_values! { |value| value.to_f }
+  end
+  
+  def format(result)
+    failure_message = +""
+    result.groups.each do |_name, files|
+      files.each do |f|
+        filename = Pathname.new(f.filename).relative_path_from(Rails.root)
+        threadhold = file_map[filename]
+        if threshold && f.covered_percent < threashold
+          failure_message << highline.color("#{filename}: expected at least #{threshold}% but got #{f.covered_percent.round(2)}%\n", :red)
+        end
+      end
+    end
+    
+    if failure_message.present?
+      raise CoverageAssertionFailure, "Coverage assetion failed!\n#{failure_message}"
+    end
+  end
+end
+
+if ENV['CI'] || ENV['COVERAGE'] || ENV['COVERAGE_ASSERTION']
+  require 'simplecov'
+  require 'simplecov-lcov'
+  
+  if ENV['COVERAGE_ASSERTION']
+    SimpleCov.formatter = CoverageAssertion
+  else
+    SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
+      [
+        SimpleCov::Formatter::HTMLFormatter,
+        SimpleCov::Formatter::LcovFormatter,
+      ],
+    )
+  end
+  
+  SimpleCov.start 'rails' do
+  # add_filter '/vendor'
+  end
+end  
+  
+```
+
+```
+
+```
+
+
+
 ###### selenium, for browser, capybara
 
 ```
@@ -137,19 +224,7 @@ end
 
 ```
 
-```
-```
 
-```rails_helper.rb
-if ENV['COVERAGE']
-  require 'simplecov'
-  require 'simplecov-rcov'
-  SimpleCov.start 'rails' do
-    add_filter '/vendor'
-  end
-  SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
-end
-```
 
 ```
 ```
