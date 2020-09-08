@@ -229,13 +229,60 @@ trottle('req/ip', :limit => 300, :period => 5.minutes) do |req|
   req.ip
 end
 
-```
+throttle("logins/email", :limit => 5, :period => 20.seconds) do |req|
+  if req.path == '/login' && req.post?
+    req.params['email'].presence
+  end
+end
+
 
 ```
+
+
+```.sh
+vi Gemfile
+bundle install
+bundle exec rails g controller Admins index new create
+bundle exec rails g model Admin name:string email:string password_digest:string
+bundle exec rails db:migrate
 ```
 
+```admin.rb
+has_secure_password
+validates :password, presence: true, length: { minimum: 6 }
 ```
+
+```admin_controller.rb
+def new 
+  @admin = Admin.new
+end
+
+def create 
+  @admin = Admin.new(admin_params)
+  @admin.save
+  redirect_to new_admin_path
+end
+
+private
+def admin_params
+  params.require(:admin).permit(:name,:email,:password,:password_confirmation)
+end
+
 ```
+
+```admins/new.html.erb
+<%= form_with model:@admin do |f| %>
+
+<%= f.pasword_field :password %>
+<%= f.password_field :password_confirmation %>
+<% end %>
+
+```
+
+```config/environments/production.rb
+config.force_ssl = true
+```
+
 
 ```
 ```
