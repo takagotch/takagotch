@@ -154,7 +154,12 @@ config.middleware.use(Rack::Tracker) do
 end
 ```
 
-```
+```app/controllers/home_controller.rb
+
+tracker do |t|
+  t.google_analytics :send, { type: 'event', category: 'CATEGORYNAME', action: 'ACTIONNAME', label: 'LABELNAME', value: 'VALUE' }
+  end
+
 ```
 
 ```
