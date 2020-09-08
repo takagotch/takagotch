@@ -218,7 +218,7 @@ tracker do |t|
 
 ```
 
-###### Unicorn jtt[
+###### Unicorn
 
 ```
 ```
