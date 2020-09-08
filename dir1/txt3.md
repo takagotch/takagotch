@@ -20,28 +20,11 @@
 ```
 
 ###### Rack::Tracker
+
 ```
-``````
-``````
-``````
-``````
-``````
-``````
-``````
-``````
-``````
-``````
-``````
-``````
-``````
-``````
-``````
-``````
-``````
-``````
-``````
-``````
+
 ```
+
 ###### Unicorn jtt[
 
 ```
@@ -303,6 +286,37 @@ end
 config.force_ssl = true
 ```
 
+
+```
+```
+
+```spec/support/controller_macros.rb
+module ControllerMacros
+  def login user(user=nil)
+    @request.env["devise.mapping"] = Devise.mappings[:user]
+    user ||= FactoryGirl.create(:user)
+    sign_in user
+  end
+end
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
+```
 
 ```
 ```
