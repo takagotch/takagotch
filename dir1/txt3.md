@@ -3,20 +3,146 @@
 
 
 
-###### sprockets
-```
-```
-
-```
+###### sprockets, webpacker, webpack
+```config/webpack/[development|test|production].js
 ```
 
-```
+```.sh
+bundle exec rake webpacker:compile
+bundle exec rake assets:precompile
+
+./node_modules/.bin/webpack --config config/webpack/development.js
 ```
 
-```
-```
+```webpacker/lib/webpacker/webpack_runner.rb
+require "shellwords"
+require "webpacker/runner"
+
+module Webpacker
+  class WebpackerRunner < Webpacker::Runner
+    def run
+      env = { "NODE_PATH" => @node_modules_path.shellescape }
+      cmd = [ "#{node_modules_path}/.bin/webpack", "--config", @webpack_config ] + @argv
+      
+      Dir.chdir(@app_path) do
+        exec env, *cmd
+      end
+    end
+    
+    
+  end
+  
+end
 
 ```
+
+```webpacker/lib/webpacker/manifest.rb
+class Webpacker::Manifest
+  class MissingEntryError < StandardError; end
+  
+  def lookup(name)
+    compile if compiling?
+    find name
+  end
+  
+  private
+  def compiling?
+    config.compile? && !dev_server.running?
+  end
+  
+end
+
+```
+
+```webpacker.yml
+default: &default
+  source_path: app/javascript
+  
+development:
+  <<: *default
+  compile: true
+
+dev_server:
+  http: false
+  host: localhost
+  port: 3035
+```
+
+```webpacker/lib/webpacker/dev_server.rb
+class Webpacker::DevServer
+  def running?
+    if config.dev_server.present?
+      Socket.tcp(host, port, connect_timeout: connect_timeout).close
+    else
+      false
+    end
+  rescue
+    false
+  end
+  
+  def host
+    fetch(:host)
+  end
+  
+  def port
+    fetch(:port)
+  end
+  
+  private
+    def fetch(key)
+      ENV["WEBPACKER_DEV_SERVER_#{key.upcase}"] || config.dev_server.fetch(key, defaults[key])
+    end
+end
+
+```
+
+```docker-compose.yml
+version: '3'
+
+services:
+  backend:
+    command: 'bundle exec rails s -b 0.0.0.0'
+    environment:
+      - WEBPACKER_DEV_SERVER_HOST: frontend
+  frontend:
+    command: './node_modules/.bin/webpack-dev-server --config config/webpack/development --host 0.0.0.0 --port 3035'
+
+```
+
+```config/webpack/environement.js
+const { environment } = require('@rails/webpacker')
+
+environment.splitChunks()
+
+environment.splitChunks((config) => Object.assign({}, config, { optimization: { splitChunks: false }}))
+
+module.exports = environment
+
+# v3
+const { environment } = require('@rails/webpacker')
+const webpack = require('webpack')
+
+environment.plugins.append(
+  'CommansChunkVendor',
+  new webpack.optimize.CommonsChunkPlugin({
+    name: 'vendor',
+    minChunks: (module) => {
+      return module.context && module.context.indexOf('node_modules') !== -1
+    }
+  })
+)
+
+module.exports = environment
+```
+
+```app/views/home.html.erb
+<%= javascript_pack_tag 'vendor' %>
+<%= javascript_packs_with_chunks_tag 'tky' %>
+```
+
+```app/views/layouts/application.html.erb
+<%= javascript_pack_tag "vendor" %>
+<%= javascript_pack_tag 'entry_file_name' %>
 ```
 
 ###### Rack::Tracker
