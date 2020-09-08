@@ -47,9 +47,13 @@ gem ''
 
 ```.sh
 open coverage/index.html
+
+echo "coverage" >> .gitignore
 ```
 
-```
+```.yml
+- store_artifacts:
+  path: coverage
 ```
 
 ```Gemfile
@@ -86,10 +90,25 @@ end
 ```coverage/index.html
 ```
 
-```
+```app/models/user.rb
 ```
 
-```
+```spec/models_user_spec.rb
+# frozen_string_literal: true
+
+require 'rails_helpers'
+
+describe Foo, type: :model do
+  it do
+    
+  end
+end
+
+# :nocov:
+def skip_this_method
+  never_reached
+end
+
 ```
 
 ###### selenium, for browser, capybara
