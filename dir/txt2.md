@@ -140,19 +140,15 @@ end
 ```
 ```
 
-```
-```
-
-```
-```
-
-```
-```
-
-```
-```
-
-```
+```rails_helper.rb
+if ENV['COVERAGE']
+  require 'simplecov'
+  require 'simplecov-rcov'
+  SimpleCov.start 'rails' do
+    add_filter '/vendor'
+  end
+  SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+end
 ```
 
 ```
@@ -161,13 +157,47 @@ end
 ```
 ```
 
-```
+###### brakeman
+
+```.sh
+brakeman
+brakeman --only-files=path/to/specific_file
 ```
 
 ```
 ```
 
+###### bullet
+
+```config/environments/development.rb
+User::Application.configure do
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.bullet_logger = true
+    Bullet.stacktrace_includes
+  end
+end
+
 ```
+
+```
+```
+
+###### pre-commit
+
+```.sh
+pre-commit install
+pre-commit disable yaml checks rubocop
+```
+
+```
+```
+
+###### rubocop
+
+```.sh
+rubocop --auto-gen-config
+rubocop -a path/to/file.rb
 ```
 
 ```
