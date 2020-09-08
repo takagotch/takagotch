@@ -300,13 +300,110 @@ module ControllerMacros
 end
 ```
 
-```
+```spec/rails_helper.rb, spec/support/devise.rb
+RSpec.configure do |config|
+  config.include Devise::Test::ControllerHelpers, :type => :controller
+  config.include ControllerMacros, :type => :controller
+end
+
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 ```
 
-```
+```spec/users/user_controller_helper.rb
+require 'rails_helper'
+
+RSpec.describe UsersController, type: :controller do
+  describe 'GET #index' do
+    context 'with assign all users' do
+      before do
+        login_user
+        get :index
+      end
+      it { is_expected.to have_http_status :success }
+      it { is_expected.to render_template :index }
+    end
+  end
+end
+
+let(:user) { FactoryGirl.create(:user) }
+before do
+  allow(controller).to receive(:current_user).and_return(user)
+end
 ```
 
+```.sh
+./bin/rspec/ spec/controllers/users_controller_spec.rb
 ```
+
+```.sh
+vi Gemfile
++ gem 'devise'
+./bin/rails g devise:install
+
+./bin/rails g devise User
+./bin/rails db:create db:migrate
+
+./bin/rails g devise:views users
+
+./bin/rake haml:erb2haml
+
+./bin/rails g devise:controllers users
+
+vi Gemfile
++ gem 'devise-i18n'
+bundle install
+
+./bin/rails g devise:i18n:views users
+./bin/rake haml:erb2haml
+./bin/rails g devise:i18n:locale ja
+./bin/rails g devise:i18n:locale en
+
+rm -rf config/locales/devise.en.yml
+
+```
+
+```config/environments/development.rb
+config.action_mailer.default_url_optios = { host: 'localhost', port: 3000 }
+```
+
+```app/views/layouts/application.html.haml
+%p.notice = notice
+%p.alert = alert
+```
+
+```app/models/user.rb
+class User < ApplicationRecord
+  devise :database_authenticable, :registerable,
+         :recoverable, :rememberable, :trackable, :validable
+         :lockable, :confirmable, :timeoutable
+end
+```
+
+```config/initializers/devise.rb
+config.scoped_views = true
+```
+
+```app/controllers/users/sessions_controller.rb
+class Users::SessionsController < Devise::SessionsController
+  def create
+    super do |resource|
+    end
+  end
+  
+end
+
+```
+
+```config/routes.rb
+Rails.application.rotes.draw do
+  devise_for :users, module: :users
+
+end
+
+```
+
+```config/application.rb
+config.i18n.default_locale = :ja
 ```
 
 ```
