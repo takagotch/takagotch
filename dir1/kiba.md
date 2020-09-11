@@ -5,6 +5,8 @@
 vi Gemfile
 bundle install
 bundle exec kiba
+
+bundle exec kiba data-pp-script.etl
 ```
 
 ```kiba_run.rb
@@ -139,12 +141,16 @@ post_process do
 end
 ```
 
-```data=[rpcess=scro[t/et;
+```data-pp-scro[t.etl
 source CsvSource, 'incoming/customers_*.csv'
 
 transform GeocodeTransform, [:address1, :ip, :city], [:lat, :lon, :geocoding_status]
 
-lon
+transform { |row| row[:geocoding_status] ? row : nil }
+transform VerifyCompliance
+transform { |row| row[:compiance_check] == '1' ? row : nil }
+
+lon UpserDestination, config[:reporting], table: 'customers', key: :cust_key
 ```
 
 ```
