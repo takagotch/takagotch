@@ -345,7 +345,13 @@ CIM_TRANSACTION_KEY = HADEAN_CONFIG['paypal']['password']
 
 ###### SSL audit
 
-```
+```.sh
+python3 -c "import certifi; print(certifi.where())"
+python3 -c "import requests:print(requests.__version__)"
+python3 -c "import requests; print(requests.certs.where())"
+
+
+
 ```
 
 
