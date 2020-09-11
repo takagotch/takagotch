@@ -346,16 +346,41 @@ CIM_TRANSACTION_KEY = HADEAN_CONFIG['paypal']['password']
 ###### SSL audit
 
 ```.sh
+
+
+
+trust
+
 python3 -c "import certifi; print(certifi.where())"
 python3 -c "import requests:print(requests.__version__)"
 python3 -c "import requests; print(requests.certs.where())"
 
+python local_ca_install.py
 
+python3 -c "import ssl; print(ssl.get_default_verify_paths())"; (set -x; -l /usr/lib/ssl)
+ls -l /usr/lib/ssl
 
 ```
 
 
-```
+```local_ca_install.py
+#!/ussr/bin/env python
+
+import certifi
+
+cabundle = certifi.where()
+local_rootCA = 'ylocal-root-cacert.crt'
+
+print('read from {}'.format( local_rootCA ) )
+with open( local_rootCA, 'rb' ) as infile:
+  myrootca = infile.read()
+  
+print('append to {}'.format( cabundle ))
+with open( cabundle, 'ab' ) as outfile:
+  outfile.write( myrootca )
+  
+print( '{} has been imported.'.format( local_rootCA ) )
+
 ```
 
 ```
