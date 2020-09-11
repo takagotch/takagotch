@@ -51,7 +51,34 @@ end
 ```
 
 
-```
+```usage.rb
+require 'active_merchant'
+
+ActiveMerchant::Billing::Base.mode = :test
+
+gateway = ActiveMerchant::Billing::TrustCommerceGateway.new(
+            :login => 'TestMerchant',
+            :password => 'password')
+
+amount = 1000
+
+credit_card = ActiveMerchant::Billing::CreditCard.new(
+                :first_name         => 'Tky',
+                :last_name          => 'Bobsen',
+                :number             => '368822220000',
+                :month              => '8',
+                :year               => Time.now.year+1,
+                :verification_value => '000')
+
+if credit_card.validate.empty?
+  response = gateway.purchase(amount, credit_car)
+  
+  if response.success?
+    puts "Successfully charged $#{sprintf("%.2f", amount / 100)} to the credit card #{credit_card.display_number}"
+  else
+    raise StandardError, response.message
+  end
+end
 ```
 
 ```
