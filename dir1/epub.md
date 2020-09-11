@@ -43,7 +43,7 @@ File.open(imgfile) do
 end
 
 book.ordered {
-  book.add_item('',
+  book.add_item('text/cp1.xhtml',
                 content: StringIO.new().landmark()
                 <html xmlns="http://www.w3.org/1999/xhtml">
                 <>
