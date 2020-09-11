@@ -13,6 +13,7 @@ authentication_password: "xxx"
 ```.sh
 rails c
 
+rails g config:install
 
 
 ```
@@ -40,21 +41,22 @@ end
 </form>
 ```
 
-```
-```
-
-
-```
+```config/initializers/new_framework_defaults_5_2.rb
+Rails.application.config.action_view.form_with_generates_ids = true # false
 ```
 
-```
+
+```config/initializers/config.rb
 ```
 
 ```
 ```
 
-
 ```
+```
+
+
+```#
 ```
 
 ```
