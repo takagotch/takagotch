@@ -27,9 +27,14 @@ end
 ```tree_blue.rb
 
 def authorize(money, credit_card_or_vault_id, options = {})
+  create_transaction(:sale, money, credit_card_or_value_id, options)
 end
 
 def capture(money, authorization, options = {})
+  commit do
+    result = @tree_gateway.transaction.submit_for_settlement(authorization, amount(money).to_s)
+    response_from_result(result)
+  end
 end
 
 def purchase(money, credit_card_or_vault_id, options = {})
