@@ -1,11 +1,20 @@
-######
+###### config
 ---
 
 
-```
+```config/settings.yml
+service:
+  name: 'tkgcci'
+  url: 'http://tkgcci.com'
+
+authentication_password: "xxx"
 ```
 
-```
+```.sh
+rails c
+
+
+
 ```
 
 ```
