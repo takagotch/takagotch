@@ -1,4 +1,4 @@
-###### config
+###### [config](https://github.com/rubyconfig/config)
 ---
 
 
@@ -56,7 +56,12 @@ Rails.application.config.action_view.form_with_generates_ids = true # false
 ```
 
 
-```#
+```#{Rails.root}/config/environments/development.yml
+size: 2
+computed: <%= 1 + 2 + 3 %>
+section:
+  size: 3
+  servers: [ {name: tkgcci.com}, {name: amazon.com} ]
 ```
 
 ```
