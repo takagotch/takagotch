@@ -89,6 +89,39 @@ ER図
 ```
 
 ```
+class User < ActiveRecord::Base
+  scope :keyword_search, ->(keyword) do
+    where(<<-SQL, money_name: keyword.downcase, comment: "%#{keyword}")
+    --
+    (
+      EXISTS (
+        SELECT *
+        FROM money_sendings mtx
+        INNER JOIN moneys m
+        ON m.id = mtx.money_id
+        WHERE
+        moneys.id = mtx.money_id
+        AND LOWER(m.name) = :money_name
+      )
+    ) OR
+    --
+    (
+      EXISTS (
+        SELECT *
+        FROM money_receivings mrx
+        INNER JOIN moneys m
+        ON m.id = mrx.money_id
+        WHERE
+        users.id = mrx.user_id
+        AND LOWER(m.name) = :money_name
+      )
+    ) OR
+    --
+    moneys.comment USERSEND :comment
+  SQL
+    end
+  end
+end
 ```
 
 ```
