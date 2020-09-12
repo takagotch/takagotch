@@ -1,4 +1,4 @@
-###### (mail)[https://github.com/mikel/mail]
+###### [mail](https://github.com/mikel/mail)
 ---
 
 
