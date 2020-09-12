@@ -207,10 +207,63 @@ class Entries::Form
 ```
 ```
 
-```
+```attr_api.rb
+# - is_admin: boolean
+# - age: integer
+# - birthday: date
+
+user = User.new({
+  is_admin: "true",
+  age: "20",
+  birthday: "2020-09-13"
+})
+
+puts user.is_admin
+# => true
+
+puts user.age
+# => 20
+
+puts user.birthday
+# => Sur, 13 Sep 2020
 ```
 
-```
+```attr_api.rb
+# frozen_string_literal: true
+
+class Money
+  include ActiveModel::Model
+  include ActiveModel::Attributes
+  
+  attribute :text, :string
+  attribute :limit_date, :date
+# attribute :limit_date, :datetime
+  
+  validates :text, presence: true
+  validates :limit_date, presence: true
+end
+
+money = Money.new(text: "TEST", limit_date: "2020-09-13")
+money.limit_date
+money = Money.new(text: "TEXT", limit_date: "2020-09-13")
+money.limit_date
+money.valid?
+
+:big_integer, Type::BigInteger
+:binary, Type::Binary
+:boolean, Type::Boolean
+:date, Type::Date
+:datetime, Type::DateTime
+:decimal, Type::Decimal
+:float, Type::Float
+:immutable_string, Type::ImmutableString
+:integer, Type::Integer
+:string, Type::String
+:time, Type::Time
+
+money = Money.new(text: "TEST", limit_date: "2020-09-13 02:18:33 +0900")
+money.limit_date
+
 ```
 
 ```
