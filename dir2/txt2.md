@@ -36,11 +36,15 @@ class RegisterationForm
   end
   
 end
-
-RegistrationForm.new(xxx_params).accepted
 ```
 
-```
+```active_model_attr.rb
+class RegistrationForm
+  include ActiveModel::Model
+  include ActiveModel::Attributes
+  
+  attribute :accepted, :boolean, default: false
+end
 ```
 
 ```
