@@ -62,7 +62,12 @@ end
 ```
 ```
 
-```
+money [send|receive].rb
+```active_record.rb
+class User < ActiveRecord::Base
+  has_many :money_sendings
+  has_many :
+end
 ```
 
 ```
