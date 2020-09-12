@@ -83,7 +83,9 @@ class MoneyRecieving < ActiveRecord::Base
 end
 ```
 
+!()[]
 ```
+ER図
 ```
 
 ```
