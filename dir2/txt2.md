@@ -88,6 +88,8 @@ end
 ER図
 ```
 
+
+scope
 ```
 class User < ActiveRecord::Base
   scope :keyword_search, ->(keyword) do
