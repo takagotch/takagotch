@@ -21,7 +21,23 @@ Money.time_zone == Time.zone.name
 money.confirmed == false
 ```
 
-```
+```active_model.rb
+class RegisterationForm
+  include ActiveModel::Model
+  
+  attr_accessor :accepted
+  
+  def accepted=(value)
+    @accepted = ActiveModel::Type.lookup(:boolean).cast(value)
+  end
+  
+  def accepted=(value)
+    @accepted = value == 'xxx'
+  end
+  
+end
+
+RegistrationForm.new(xxx_params).accepted
 ```
 
 ```
