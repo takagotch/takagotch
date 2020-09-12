@@ -151,6 +151,39 @@ end
 class Entries::Form
   include ActiveModel::Model
   include ActiveModel::Attributes
+  
+  attribute :title, :string
+  attribute :body, :string
+  attribute :draft, :boolean, default: false
+  attribute :published_at, :datetime
+  attribute :tags
+  
+  attribute :published_at, :datetime, default: ->{ Time.now }
+  
+  def initialize(user, entry, params = {})
+    @user = user
+    @entry = entry
+    super(params)
+  end
+  
+  @attributes = self.class._default_attributes.deep_dup
+  assign_attributes(params)
+  
+  form.published_at = "2020/09/13 02:01"
+  form.published_at # => 2020-09-13 02:01:00 +0900
+  form.published_at = "xxxx"
+  form.published_at # => nil
+  
+  form.draft = "1"
+  form.draft # => true
+  form.draft = "0"
+  form.draft # => false
+  
+  form.attributes
+  # => {"title"=>"TITLE", "body"=>"BAR", "daft"=>false, "published_at"=>2020-09-13 02:02:00 +0900, "tags"=>["Tx", "Rx"]}
+  
+  form.attribute_names
+  # => ["title", "body", "draft", "published_at", "tags"]
 ```
 
 ```
