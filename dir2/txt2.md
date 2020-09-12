@@ -62,11 +62,24 @@ end
 ```
 ```
 
-money [send|receive].rb
+money [send|receive].rb [tx|rx]
 ```active_record.rb
 class User < ActiveRecord::Base
   has_many :money_sendings
-  has_many :
+  has_many :money_receivings
+end
+
+class Money < ActiveRecord::Base
+end
+
+class Money < ActiveRecord::Base
+  belongs_to :User
+  belongs_to :Money
+end
+
+class MoneyRecieving < ActiveRecord::Base
+  belongs_to :User
+  belongs_to :Money
 end
 ```
 
