@@ -147,7 +147,10 @@ end
 ```
 ```
 
-```
+```usage.rb
+class Entries::Form
+  include ActiveModel::Model
+  include ActiveModel::Attributes
 ```
 
 ```
