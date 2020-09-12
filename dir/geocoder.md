@@ -1,4 +1,4 @@
-###### geocoder
+###### [geocoder](https://github.com/alexreisner/geocoder)
 ---
 
 
@@ -61,6 +61,7 @@ include Geocoder::Model::MongoMapper
 
 obj.to_coordinates # => [xx.xxxxxxx, -xxx.xxxxxxx] 
 
+extend Geocoder::Model::ActiveRecord
 ```
 
 ```
