@@ -1,4 +1,4 @@
-###### active_model_serializers
+###### active_model_serializers, jbuider
 ---
 # => json
 
@@ -93,10 +93,22 @@ end
 ```
 ```
 
-```
+###### jbuilder
+
+```jbuilder.rb
+json.(@message, :content, :author)
+# => {content: 'hello', author: 'xxx'}
 ```
 
-```
+```active_model_serializer.rb
+class MessageSerializer < ActiveModel::Serializer
+  attributes :content, :author, :role
+  
+  def role
+    object.role.name
+  end
+end
+
 ```
 
 ```
