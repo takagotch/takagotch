@@ -191,40 +191,113 @@ end
 
 ```post_serializer.rb
 class PostSerializer < ActiveModel::Serializer
-
+  attribute :title
+  
+  attribute :created_at, key: :timestamp
+  
+  has_many :comments, serializer: CommentSerializer
+  
+  attribute :published
+  
+  def published
+    object.published_at.present?
+  end
 end
 
+class CommentSerializer < ActiveModel::Serializer
+  attribute :body
+end
+
+{
+  title: "TITLE",
+  timestamp: "2020-09-14T00:57:00+0900",
+  published: true,
+  comments: [
+    {
+      body: "COMMENTS"
+    }
+  ]
+}
+```
+
+```master_data_controller.rb
+class MasterDataController
+  render json: MasterData.new, serializer: MasterDataSerializer
+end
+```
+
+```master_data.rb
+class MasterData
+  def first_master_data
+    @first_master_data ||= Master::FirstMasterData.all
+  end
+  
+  def second_master_data
+    @second_master_data ||= Master::SecondMasterData.all
+  end
+end
+```
+
+```master_data_serializer.rb
+class MasterDataSerializer
+  has_many :first_master_data
+  has_many :second_master_data
+  
+  class FirstMasterDataSerializer
+    attributes :id, :name
+  end
+  
+  class SecondMasterDataSerializer
+    attributes :id, :name
+  end
+end
 
 ```
 
 ```
 ```
 
+```app/controllers/post_controller.rb
+class PostsController < ApplicationController
+  def show
+    @post = Post.find(params[:id]).preload(:comments)
+    render json: @post, serializer: PostSerializer
+  end
+end
 ```
+
+```app/serializers/posts_serializer.rb
+class PostSerializer < ActiveModel::Serializer
+  attribute :title
+  
+  has_many :comments, serializer: CommentSerializer
+end
+
+class CommentSerializer < ActiveModel::Serializer
+  attribute :body
+end
 ```
 
 ```
 ```
 
-```
-```
-
-```
-```
-
-```
-```
-
-```
+```app/controllers/posts_controller.rb
+class PostsController < ApplicationController
+  def show
+    @post = Post.find(params[:id]).preload(:comments)
+  end
+end
 ```
 
-```
+```app/views/posts/show.json.jbuilder
+json.title @post.title
+json.page_views do
+  json.partial! partial: 'comment', collection: @post.comments, as: :comment
+end
 ```
 
-```
-```
-
-```
+```app/views/posts/_comments.json.jbuilder
+json.body comments.body
 ```
 
 ```
