@@ -1,6 +1,6 @@
 ###### active_model_serializers
 ---
-
+# => json
 
 ```project.rb
 class Project < ApplicationRecord
