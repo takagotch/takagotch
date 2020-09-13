@@ -111,25 +111,65 @@ end
 
 ```
 
-```
-```
-
-```
+```call.rb
+render json: @message
 ```
 
-```
-```
+ActiveModel::Serializers
+```users_controller.rb
+def list_with_serializer
+  users = User.all
+  render json: ActiveModel::ArraySerializer.new(
+    users,
+    each_serializer: UserSerializer
+  ).to_json
+end
 
 ```
-```
+
+```user_serialiser.rb
+class UserSerializer < ActiveModel::Serializer
+  attributes :id, :email, :name
+  
+  def name
+    object.display_name
+  end
+  
+end
 
 ```
+
+```.rb
+class Post
+  include ActiveModel::Serialization
+  include ActiveModel::Model
+end
+
+ActiveModel::ArraySerializer.new(
+  users,
+  each_serializer: UserSerializer,
+  message: message
+)
 ```
 
-```
+jbuilder
+```users_controller.rb
+def list_with_jbuilder
+  @users = User.all
+  render :list_with_jbuilder
+end
 ```
 
+```list_with_jbuilder.jbuilder
+json.array! @users.each do |user|
+  json.partial! 'user', user: user
+end
 ```
+
+```_user.jbuilder
+json.id user.id
+json.email user.email
+json.name user.display_name
 ```
 
 ```
