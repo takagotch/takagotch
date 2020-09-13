@@ -1,4 +1,4 @@
-######　active_model_serializers
+###### active_model_serializers
 ---
 
 
@@ -47,6 +47,11 @@ class Jobs Controller < ApplicationController
     # n+1
     @jobs = Job.preload(:project)
     render json: @jobs, each_serializer: JobSerializer
+    #
+    Job.preload(project: [:categories])
+    render json: @jobs, each_serializer: JobSerializer, include: { project: [ :categories] }
+    # => [ { "": 1, ...}, "": "", "": { "": 1, "": "", "": [ { "": 1, "": "" }, {}, ...] } ]
+  
   end
   
   # =>
@@ -79,6 +84,8 @@ end
 ```categories_serializer.rb
 class CategorySerializer < ActiveModel::Serializer
   attributes :id, :name
+  
+  has_many :categories, serializer: CategorySerializer
 end
 
 ```
