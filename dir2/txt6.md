@@ -178,10 +178,23 @@ json.name user.display_name
 ```
 ```
 
-```
-```
+```post_controller.rb
+class PostsController < ApplicationController
+  def show
+    @post = Post.find(params[:id])
+    render json: @post, serializer: PostSerializer
+  end
+end
+
 
 ```
+
+```post_serializer.rb
+class PostSerializer < ActiveModel::Serializer
+
+end
+
+
 ```
 
 ```
