@@ -306,10 +306,34 @@ json.body comments.body
 ```
 ```
 
-```
+```post_serializer.rb
+class PostSerializer < ActiveModel::Serializer
+  attribute :created_at, key: :timestamp
+  attribute: title
+  
+  def title
+    " this book title is #{obj.title}"
+  end
+  
+end
 ```
 
-```
+```call.rb
+render json: @users, root: 'data', each_serializer: User::ShowSerializer
+
+@users.each do |user|
+  User::ShowSerializer(user)
+end
+
+render json: @user, root: 'data', serializer: User::ShowSerializer
+
+User::ShowSerializer(@user)
+
+
+def call
+  @post = Post.find(params[:id])
+  render json: @post, serializer: PostSerializer
+end
 ```
 
 ```
