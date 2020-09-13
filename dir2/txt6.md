@@ -354,7 +354,42 @@ end
 ```
 ```
 
-```
+```secure_password.rb
+class Person
+  include ActiveModel::SecurePassword
+  has_secure_password
+  has_secure_password :recovery_password, validations: false
+  attr_accessor :password_digest, :recovery_password_digest
+end
+
+person = Person.new
+
+person.valid?
+
+person.password = 'pass'
+person.password_confirmation = 'pass'
+person.valid?
+
+person.password = 'pass'
+person.valid?
+
+person.password = person.password_confirmation = 'tky'
+person.valid?
+
+person.recovery_password = "pass"
+
+person.authenticate('pass')
+person.authenticate('pass')
+person.authenticate_password('pass')
+person.authenticate_password('pass')
+
+person.authenticate_recovery_password('pass')
+person.authenticate_recovery_password('pass')
+
+person.password_digest
+person.recovery_password_digest
+
+
 ```
 
 ```
