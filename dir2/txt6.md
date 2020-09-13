@@ -395,25 +395,117 @@ person.recovery_password_digest
 ```
 ```
 
+```serialization.rb
+class Person
+  include ActiveModel::Serialization
+  
+  attr_accessor :name
+  
+  def attributes
+    {'name' => nil}
+  end
+end
+
+person = Person.new
+person.serializable_hash
+person.name = "tky"
+person.serializable_hash
+
+class Person
+  include ActiveModel::Serializers::JSON
+  
+  attr_accessor :name
+  
+  def attributes
+    {'name' => nil}
+  end
+end
+
+person = Person.new
+person.as_json
+person.name = "Tky"
+person.as_json
+
+class Person
+  include ActiveModel::Serializers::JSON
+  
+  attr_accessor :name
+  
+  def attributes=(hash)
+    hash.each do |key, value|
+      send("#{key}=", value)
+    end
+  end
+  
+  def attributes
+    {'name' => nil}
+  end
+end
+
+json = { name: 'tky' }.to_json
+person = Person.new
+person.from_json(json)
+person.name
 ```
+
+```app/models/person.rb translation.rb
+class Person
+  extend ActiveModel::Translation
+  
+  include ActiveModel::Model
+  
+end
+
+Person.human_attribute_name('name')
+```
+
+```config/locales/app.pt-BR.yml
+pt-BR:
+  activemodel:
+    attributes:
+      person:
+        name: 'Tky'
+```
+
+```test/models/person_test.rb
+require 'test_helper'
+  class PersonTest < ActiveSupport::TestCase
+  include ActiveModel::Lint::Tests
+  
+  setup do
+    @model = Person.new
+  end
+  end
+end
+```
+
+```.sh
+rails test
 ```
 
 ```
 ```
 
-```
-```
+```validations.rb
+class Person
+  include ActiveModel::Validations
+  
+  attr_accessor :name, :email, :token
+  
+  validates :name, :email, :token
+  validates_format_of :email, with: /\A([^\s]+)((?:[-a-z0-9]\.)[a-z]{2,})\z/i
+  validates! :token, presence: true
+end
 
-```
-```
-
-```
-```
-
-```
-```
-
-```
+person = Person.new(token: "xxx")
+person.valid?
+person.name = 'xxx'
+person.email = 'xxx'
+person.valid?
+person.email = 'info@gmail.com'
+person.valid?
+person.token = nil
+person.valid?
 ```
 
 ```
