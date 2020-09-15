@@ -1,8 +1,5 @@
 ###### ActiveAdmin, Devise
-
-#### ActiveAdmin, Devise
 ---
-
 
 
 ```.sh
