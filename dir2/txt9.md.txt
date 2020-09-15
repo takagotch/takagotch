@@ -1,17 +1,41 @@
-######　
+######　ActiveAdmin, Devise
 ---
 
 
 
-```
+```.sh
+vi Gemfile
+gem 'activeadmin'
+gem 'devise'
+bundle install
+
+rails g devise:install
+rails g active_admin:install
+
+
+
 ```
 
 
-```
+```config/initializers/active_admin.rb
+config.current_user_method = :current_admin_user
+config.current_user_method = :current_user(or current_company)
+config.logout_link_path = :destroy_admin_user_session_path
+config.logout_link_path = :destroy_user_session_path
+config.logout_link_path = :root_path
 ```
 
+```app/application_controller.rb
+def authenticate_admin_user!
+  authenticate_user!
+  
+  unless currrent_user.has_role 'admin'
+    flash[:alert] = ""
+    redirect_to root_path
+  end
+end
 
-```
+
 ```
 
 
