@@ -40,6 +40,10 @@
 ```
 
 
+|Title|Type|Description|
+|:---|:---|:---|
+|table|string|テーブルを表示したい|
+
 | 商号 | takagotch株式会社 (Activate-d LLC)| 
 |:---|:---|:---|
 | 創業 | 2018年(令和1年) 01月 | 
