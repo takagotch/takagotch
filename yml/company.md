@@ -39,10 +39,11 @@
 
 ```
 
-
+```
 |Title|Type|Description|
 |:---|:---|:---|
 |table|string|テーブルを表示したい|
+```
 
 | 商号 | takagotch株式会社 (Activate-d LLC)| 
 |:---|:---|:---|
