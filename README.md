@@ -1,4 +1,10 @@
+
+[](
 ![Front img](https://github.com/takagotch/takagotch/blob/master/v4mJFCT.jpg)
+)
+
+[![TKVTV hommachi](http://img.youtube.com/vi/IRjnyZKCtH4/0.jpg)](https://www.youtube.com/watch?v=IRjnyZKCtH4 "TKVTV hommachi")
+
 
 ![Google Analytics](https://www.google-analytics.com/collect?v=1&tid=UA-174694405-1&cid=555&t=pageview&ec=repo&ea=open&dp=%2F&dt=%2F)
 
