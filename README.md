@@ -1,7 +1,7 @@
 
-[](
+<!--
 ![Front img](https://github.com/takagotch/takagotch/blob/master/v4mJFCT.jpg)
-)
+-->
 
 [![TKVTV hommachi](http://img.youtube.com/vi/IRjnyZKCtH4/0.jpg)](https://www.youtube.com/watch?v=IRjnyZKCtH4 "TKVTV hommachi")
 
