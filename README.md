@@ -46,4 +46,24 @@
 </table>
 -->
 
-
+<table style="border: 1px solid #CCC; border-collapse: collapse;">
+  <tbody style="border: none;">
+    <tr valign="top">
+      <td width="50%" align="center" style="border: none;">
+        
+        <img height="300px" src="https://github.com/takagotch/takagotch/blob/master/desktop/board1.png">
+        
+        <p> takagotch </p>
+        <img src="https://github.com/takagotch/takagotch/blob/master/desktop/board1.png">
+        
+        <img src="https://github.com/takagotch/takagotch/blob/master/desktop/board1.png">
+        
+      </td>
+      <td width="50%" align="center" style="border: none;">
+      
+        <img height="300px" src="https://github.com/takagotch/takagotch/blob/master/desktop/board1.png">
+        
+      </td>
+    </tr>
+  </tbody>
+</table>
