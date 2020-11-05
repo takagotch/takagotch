@@ -51,18 +51,19 @@
     <tr valign="top">
       <td width="50%" align="center" style="border: none;">
         
-        <img height="300px" src="https://raw.githubusercontent.com/takagotch/takagotch/master/desktop/board1.png">
+        <img height="300px" src="https://github-readme-stats.vercel.app/api?username=takagotch&show_icons=true">
         
-        <p> takagotch </p>
-        <img src="https://raw.githubusercontent.com/takagotch/takagotch/master/desktop/board1.png">
-        
-        <img src="https://raw.githubusercontent.com/takagotch/takagotch/master/desktop/board1.png">
+        <p> takagotch's 受賞歴 </p>
+        <img src="https://github-profile-trophy.vercel.app/?username=takagotch">
+        <img src="https://gpvc.arturio.dev/takagotch">
+        <img src="https://badges.pufler.dev/years/takagotch">
+        <img src="https://badges.pufler.dev/repos/takagotch">
         
       </td>
       <td width="50%" align="center" style="border: none;">
       
-        <img height="300px" src="https://raw.githubusercontent.com/takagotch/takagotch/master/desktop/board1.png">
-        
+
+
       </td>
     </tr>
   </tbody>
