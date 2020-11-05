@@ -43,6 +43,8 @@
         <img src="https://badges.pufler.dev/years/takagotch">
         <img src="https://badges.pufler.dev/repos/takagotch">
       </td>
+      
+      
     </tr>
   </tbody>
 </table>
