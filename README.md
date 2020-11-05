@@ -54,11 +54,6 @@
 
 
 
-<!--
-![Github stats](https://github-readme-stats.vercel.app/api?username=girisagar46&show_icons=true)![Profile views](https://gpvc.arturio.dev/girisagar46)  
-<img src="https://wakatime.com/share/@girisagar46/9e2dcaec-ba40-4697-9a36-0e00e2aba570.svg" height="350px" width="450px">
---!>
-
 <table style="border: 1px solid #CCC; border-collapse: collapse;">
   <tbody style="border: none;">
     <tr valign="top">
