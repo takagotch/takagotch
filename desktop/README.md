@@ -1,4 +1,4 @@
-### Hi there 👋, my name is Sagar
+### Hi there 👋, my name is Takashi Yoshioka
 
 Skills: __PYTHON/ DJANGO/ AWS__
 
