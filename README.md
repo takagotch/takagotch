@@ -67,9 +67,8 @@
         <img src="https://badges.pufler.dev/years/takagotch">
         <img src="https://badges.pufler.dev/repos/takagotch">
       </td>
-      <td width="50%" align="center" style="border: none;">
-        <img height="300px" src="https://wakatime.com/share/@girisagar46/9e2dcaec-ba40-4697-9a36-0e00e2aba570.svg">
-      </td>
+
+
     </tr>
   </tbody>
 </table>
