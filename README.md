@@ -64,7 +64,7 @@
       <td width="50%" align="center" style="border: none;">
         <img height="300px" src="https://github-readme-stats.vercel.app/api?username=takagotch&show_icons=true">
         
-        <p>My trophies</p>
+        <p> TAKAGOTCH's 受賞歴 </p>
         <img src="https://github-profile-trophy.vercel.app/?username=takagotch">
         <img src="https://gpvc.arturio.dev/takagotch">
         <img src="https://badges.pufler.dev/years/takagotch">
