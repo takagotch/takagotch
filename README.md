@@ -46,25 +46,21 @@
 </table>
 -->
 
+
 <table style="border: 1px solid #CCC; border-collapse: collapse;">
   <tbody style="border: none;">
     <tr valign="top">
       <td width="50%" align="center" style="border: none;">
-        
         <img height="300px" src="https://github-readme-stats.vercel.app/api?username=takagotch&show_icons=true">
         
-        <p> takagotch's 受賞歴 </p>
+        <p>My trophies</p>
         <img src="https://github-profile-trophy.vercel.app/?username=takagotch">
         <img src="https://gpvc.arturio.dev/takagotch">
         <img src="https://badges.pufler.dev/years/takagotch">
         <img src="https://badges.pufler.dev/repos/takagotch">
-        
       </td>
-      <td width="50%" align="center" style="border: none;">
-      
 
-
-      </td>
     </tr>
   </tbody>
 </table>
+
