@@ -17,7 +17,7 @@
   <tbody style="border: none;">
     <tr valign="top">
       <td width="50%" align="center" style="border: none;">
-        <img height="300px" src="https://github-readme-stats.vercel.app/api?username=girisagar46&show_icons=true">
+        <img height="300px" src="https://github-readme-stats.vercel.app/api?username=takagotch&show_icons=true">
         
         <p>収益力</p>
         <img src="https://github-profile-trophy.vercel.app/?username=takagotch">
