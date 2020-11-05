@@ -44,8 +44,12 @@
         <img src="https://badges.pufler.dev/repos/takagotch">
       </td>
       
-      <td width="50%" align="center" style="border: none;">
+      <td width="25%" align="center" style="border: none;">
         <img height="300px" src="https://github.com/takagotch/takagotch/blob/master/desktop/board1.png">
+      </td>
+      
+      <td width="25%" align="center" style="border: none;">
+        <img height="300px" src="https://github.com/takagotch/takagotch/blob/master/desktop/board2.png">
       </td>
       
       
