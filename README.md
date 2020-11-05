@@ -45,7 +45,7 @@
       </td>
       
       <td width="25%" align="center" style="border: none;">
-        <img height="300px" src="src="https://wakatime.com/share/@takagotch/74ccb574-d46c-4e90-bb17-af0d273bd522.svg"">
+        <img height="300px" src="https://wakatime.com/share/@girisagar46/9e2dcaec-ba40-4697-9a36-0e00e2aba570.svg">
       </td>
       
       <td width="25%" align="center" style="border: none;">
