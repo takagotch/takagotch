@@ -45,7 +45,7 @@
       </td>
       
       <td width="25%" align="center" style="border: none;">
-        <img height="300px" src="https://github.com/takagotch/takagotch/blob/master/desktop/board1.png">
+        <img height="300px" src="src="https://wakatime.com/share/@takagotch/74ccb574-d46c-4e90-bb17-af0d273bd522.svg"">
       </td>
       
       <td width="25%" align="center" style="border: none;">
