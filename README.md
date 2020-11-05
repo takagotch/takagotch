@@ -12,7 +12,10 @@
 ![Google Analytics](https://www.google-analytics.com/collect?v=1&tid=UA-174694405-1&cid=555&t=pageview&ec=repo&ea=open&dp=%2F&dt=%2F)
 
 [名刺▶download it](https://raw.githubusercontent.com/takagotch/takagotch/master/desktop/businesscard1.pdf)
+
 [オリジナルグッズはこちら▶T-Shirt](https://takagotch.github.io/page63/shop/?fbclid=IwAR1_7pM4r0kSsRjjsXs0dcBYRsehRpjMbk6YYXcgiiC9iSCQgmMdQIFv-c4#/)
+
+
 
 <!-- 
 <table style="border: 1px solid #CCC; border-collapse: collapse;">
