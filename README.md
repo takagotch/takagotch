@@ -13,6 +13,8 @@
 
 [名刺▶download it](https://raw.githubusercontent.com/takagotch/takagotch/master/desktop/businesscard1.pdf)
 
+<!-- -->
+
 <table style="border: 1px solid #CCC; border-collapse: collapse;">
   <tbody style="border: none;">
     <tr valign="top">
