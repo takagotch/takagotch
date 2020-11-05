@@ -51,17 +51,17 @@
     <tr valign="top">
       <td width="50%" align="center" style="border: none;">
         
-        <img height="300px" src="https://github.com/takagotch/takagotch/blob/master/desktop/board1.png">
+        <img height="300px" src="https://raw.githubusercontent.com/takagotch/takagotch/master/desktop/board1.png">
         
         <p> takagotch </p>
-        <img src="https://github.com/takagotch/takagotch/blob/master/desktop/board1.png">
+        <img src="https://raw.githubusercontent.com/takagotch/takagotch/master/desktop/board1.png">
         
-        <img src="https://github.com/takagotch/takagotch/blob/master/desktop/board1.png">
+        <img src="https://raw.githubusercontent.com/takagotch/takagotch/master/desktop/board1.png">
         
       </td>
       <td width="50%" align="center" style="border: none;">
       
-        <img height="300px" src="https://github.com/takagotch/takagotch/blob/master/desktop/board1.png">
+        <img height="300px" src="https://raw.githubusercontent.com/takagotch/takagotch/master/desktop/board1.png">
         
       </td>
     </tr>
