@@ -1,22 +1,11 @@
 
 
 [![Water Fall](http://img.youtube.com/vi/HdGYAd3d0jg/0.jpg)](https://www.youtube.com/watch?v=HdGYAd3d0jg "Water Fall bg")
-
-
-https://www.youtube.com/watch?v=HdGYAd3d0jg&feature=youtu.be
-
-[![Water](https://imgur.com/f5LCMN1.mp4)](https://i.imgur.com/f5LCMN1 "Waterfall-bg")
-
-
-
-[![Imgur](https://i.imgur.com/f5LCMN1.mp4)](https://i.imgur.com/f5LCMN1.mp4 "WaterFall")
-
-
-![Imgur](https://i.imgur.com/f5LCMN1.mp4)
-
+[](
 https://i.imgur.com/f5LCMN1.mp4
+)
 
 
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/f5LCMN1" data-context="false" ><a href="//imgur.com/a/f5LCMN1"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+
 
 
