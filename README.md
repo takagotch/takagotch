@@ -51,7 +51,10 @@
       </td>
       
       <td width="25%" align="center" style="border: none;">
+        <img height="300px" src="https://github.com/takagotch/takagotch/blob/master/assets/img/P_20231119_144845.jpg.png">
+<!--
         <img height="300px" src="https://github.com/takagotch/takagotch/blob/master/desktop/board2.png">
+--!>
       </td>
       
       
