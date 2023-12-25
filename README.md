@@ -6,7 +6,7 @@
 <!--
 [![TKVTV hommachi](http://img.youtube.com/vi/IRjnyZKCtH4/0.jpg)](https://www.youtube.com/watch?v=IRjnyZKCtH4 "TKVTV hommachi")
 -->
-[![Google](http://img.youtube.com/vi/6Orx5JvksOk/0.jpg)](https://www.youtube.com/watch?v=6Orx5JvksOk "Google")
+[![Google](http://img.youtube.com/vi/_YUugB4IUl4/0.jpg)](https://www.youtube.com/watch?v=_YUugB4IUl4 "Google")
 
 <!--
 https://youtu.be/_YUugB4IUl4?si=jwh6UGgiEdvO95OZ
